@@ -5,7 +5,11 @@ import { createExpense } from './supabase';
 /**
  * Service untuk handle upload dan AI extraction
  */
-export async function processReceiptUpload(fileOrBase64: File | string) {
+export async function processReceiptUpload(
+  fileOrBase64: File | string,
+  organizationId: string,
+  userId: string
+) {
   try {
     // Step 1: Upload to Supabase Storage
     const uploadResult = await uploadImage(fileOrBase64);
@@ -18,6 +22,8 @@ export async function processReceiptUpload(fileOrBase64: File | string) {
 
     // Step 4: Save to Supabase with DRAFT status
     const expense = await createExpense({
+      organization_id: organizationId,
+      created_by: userId,
       image_url: uploadResult.public_url,
       merchant_name: validatedData.merchant_name,
       amount: validatedData.amount,
@@ -41,3 +47,4 @@ export async function processReceiptUpload(fileOrBase64: File | string) {
     throw new Error('Failed to process receipt');
   }
 }
+
