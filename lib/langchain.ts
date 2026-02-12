@@ -1,5 +1,6 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { HumanMessage } from "@langchain/core/messages";
+import { getAllCategories, type Category } from "./supabase";
 
 const apiKey = process.env.GOOGLE_AI_API_KEY;
 
@@ -25,28 +26,40 @@ export interface ExtractedExpenseData {
 }
 
 /**
- * Category mapping for auto-categorization
+ * In-memory cache for categories to avoid repeated database calls
  */
-const CATEGORY_KEYWORDS: Record<string, string[]> = {
-  "Transportasi": ["grab", "gojek", "uber", "taxi", "bensin", "fuel", "parking", "toll", "parkir", "tol"],
-  "Makanan & Minuman": ["restaurant", "cafe", "coffee", "food", "makan", "minum", "restoran", "warung", "kfc", "mcd"],
-  "Belanja": ["supermarket", "minimarket", "indomaret", "alfamart", "mall", "toko", "shop", "store"],
-  "Utilitas": ["listrik", "air", "internet", "wifi", "telepon", "pln", "pdam"],
-  "Kesehatan": ["hospital", "klinik", "apotek", "pharmacy", "dokter", "doctor", "rumah sakit"],
-  "Hiburan": ["cinema", "bioskop", "game", "gym", "fitness", "sport"],
-  "Pendidikan": ["sekolah", "kampus", "university", "course", "training", "buku", "book"],
-  "Lainnya": []
-};
+let categoriesCache: Category[] | null = null;
+let cacheTimestamp: number = 0;
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 /**
- * Auto-categorize based on merchant name
+ * Get categories from cache or database
  */
-function autoCategorize(merchantName: string): string {
-  const lowerMerchant = merchantName.toLowerCase();
+async function getCategories(): Promise<Category[]> {
+  const now = Date.now();
 
-  for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
-    if (keywords.some(keyword => lowerMerchant.includes(keyword))) {
-      return category;
+  // Return cached categories if still valid
+  if (categoriesCache && (now - cacheTimestamp) < CACHE_TTL) {
+    return categoriesCache;
+  }
+
+  // Fetch from database and update cache
+  categoriesCache = await getAllCategories();
+  cacheTimestamp = now;
+
+  return categoriesCache;
+}
+
+/**
+ * Auto-categorize based on merchant name using database categories
+ */
+async function autoCategorize(merchantName: string): Promise<string> {
+  const lowerMerchant = merchantName.toLowerCase();
+  const categories = await getCategories();
+
+  for (const category of categories) {
+    if (category.keywords.some(keyword => lowerMerchant.includes(keyword.toLowerCase()))) {
+      return category.name;
     }
   }
 
@@ -110,8 +123,8 @@ Rules:
 
     const extractedData = JSON.parse(jsonMatch[0]);
 
-    // Auto-categorize based on merchant name
-    const category = autoCategorize(extractedData.merchant_name);
+    // Auto-categorize based on merchant name (now async)
+    const category = await autoCategorize(extractedData.merchant_name);
 
     return {
       merchant_name: extractedData.merchant_name || "Unknown Merchant",
