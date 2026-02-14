@@ -62,7 +62,7 @@ export default function Sidebar() {
 
         {/* Finance Office */}
         <div className="mb-6">
-          <p className="text-xs font-semibold text-primary uppercase tracking-wide px-4 mb-2">
+          <p className="text-xs font-semibold text-foreground-muted uppercase tracking-wide px-4 mb-2">
             Finance Office
           </p>
           <NavItem
@@ -88,7 +88,7 @@ export default function Sidebar() {
 
         {/* Organization */}
         <div className="mb-6">
-          <p className="text-xs font-semibold text-primary uppercase tracking-wide px-4 mb-2">
+          <p className="text-xs font-semibold text-foreground-muted uppercase tracking-wide px-4 mb-2">
             Organization
           </p>
           <NavItem
@@ -117,12 +117,12 @@ export default function Sidebar() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
-              <span className="text-sm font-semibold text-primary">
+              <span className="text-sm font-semibold text-foreground">
                 {currentUser?.full_name?.charAt(0) || 'U'}
               </span>
             </div>
             <div>
-              <p className="text-sm font-medium text-primary">{currentUser?.full_name || 'User'}</p>
+              <p className="text-sm font-medium text-foreground">{currentUser?.full_name || 'User'}</p>
               <p className="text-xs text-foreground-muted">{currentUser?.email}</p>
             </div>
           </div>

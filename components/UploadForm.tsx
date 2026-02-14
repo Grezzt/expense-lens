@@ -102,7 +102,7 @@ export default function UploadForm() {
 
   return (
     <div className="card p-6 animate-fade-in">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">
+      <h2 className="text-2xl font-bold mb-4 text-foreground">
         📸 Upload Receipt
       </h2>
 
@@ -114,7 +114,7 @@ export default function UploadForm() {
           className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
             preview
               ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-              : 'border-gray-300 dark:border-gray-600 hover:border-primary-400'
+              : 'border-border hover:border-primary-400'
           }`}
           onClick={() => document.getElementById('file-input')?.click()}
         >
@@ -125,17 +125,17 @@ export default function UploadForm() {
                 alt="Preview"
                 className="max-h-64 mx-auto rounded-lg shadow-lg"
               />
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-foreground-muted">
                 Click to change image
               </p>
             </div>
           ) : (
             <div className="space-y-3">
               <div className="text-6xl">📄</div>
-              <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
+              <p className="text-lg font-medium text-foreground">
                 Drag & drop receipt image
               </p>
-              <p className="text-sm text-gray-500">or click to browse</p>
+              <p className="text-sm text-foreground-muted">or click to browse</p>
             </div>
           )}
         </div>

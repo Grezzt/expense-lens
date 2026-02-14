@@ -22,8 +22,8 @@ export default function SpendingTrendChart({ data }: SpendingTrendChartProps) {
   };
 
   return (
-    <div className="card p-6">
-      <h3 className="text-lg font-semibold text-white mb-4">
+    <div className="card p-6 shadow-sm">
+      <h3 className="text-lg font-semibold text-foreground mb-4">
         Spending Trend
       </h3>
       <div className="h-64">

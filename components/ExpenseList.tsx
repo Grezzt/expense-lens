@@ -53,7 +53,7 @@ export default function ExpenseList() {
     return (
       <div className="card p-8 text-center">
         <div className="animate-spin text-6xl mb-4">⚙️</div>
-        <p className="text-gray-600 dark:text-gray-400">Loading expenses...</p>
+        <p className="text-foreground-muted">Loading expenses...</p>
       </div>
     );
   }
@@ -63,25 +63,25 @@ export default function ExpenseList() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="card p-4">
-          <div className="text-sm text-gray-600 dark:text-gray-400">Total</div>
-          <div className="text-2xl font-bold text-gray-800 dark:text-white">
+          <div className="text-sm text-foreground-muted">Total</div>
+          <div className="text-2xl font-bold text-foreground">
             {stats.total}
           </div>
         </div>
         <div className="card p-4">
-          <div className="text-sm text-gray-600 dark:text-gray-400">Draft</div>
+          <div className="text-sm text-foreground-muted">Draft</div>
           <div className="text-2xl font-bold text-orange-600">
             {stats.draft}
           </div>
         </div>
         <div className="card p-4">
-          <div className="text-sm text-gray-600 dark:text-gray-400">Verified</div>
+          <div className="text-sm text-foreground-muted">Verified</div>
           <div className="text-2xl font-bold text-green-600">
             {stats.verified}
           </div>
         </div>
         <div className="card p-4">
-          <div className="text-sm text-gray-600 dark:text-gray-400">Total Amount</div>
+          <div className="text-sm text-foreground-muted">Total Amount</div>
           <div className="text-xl font-bold text-blue-600">
             Rp {stats.totalAmount.toLocaleString('id-ID')}
           </div>
@@ -96,8 +96,8 @@ export default function ExpenseList() {
             onClick={() => setFilter(status)}
             className={`px-4 py-2 rounded-lg font-medium transition-all ${
               filter === status
-                ? 'bg-primary-500 text-white shadow-lg'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                ? 'bg-primary text-white shadow-lg'
+                : 'bg-secondary/10 text-primary hover:bg-secondary/20'
             }`}
           >
             {status}
@@ -110,10 +110,10 @@ export default function ExpenseList() {
         {filteredExpenses.length === 0 ? (
           <div className="card p-12 text-center">
             <div className="text-6xl mb-4">📭</div>
-            <p className="text-xl text-gray-600 dark:text-gray-400">
+            <p className="text-xl text-foreground-muted">
               No expenses found
             </p>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-foreground-muted mt-2">
               Upload a receipt to get started
             </p>
           </div>

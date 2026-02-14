@@ -42,9 +42,10 @@
   --radius-lg: 1rem;
 }
 
+/* Dark mode disabled to enforce light theme as requested */
+/*
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark mode - adjust if needed */
     --background: #0a0a0a;
     --foreground: #f1f1f1;
     --card: #1a1a1a;
@@ -53,6 +54,7 @@
     --foreground-muted: #a0a0a0;
   }
 }
+*/
 
 * {
   margin: 0;

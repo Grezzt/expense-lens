@@ -30,7 +30,7 @@ export default function OrgSwitcher() {
             <Building2 className="w-4 h-4 text-white" />
           </div>
           <div className="text-left">
-            <p className="text-sm font-semibold text-primary">{currentOrg.name}</p>
+            <p className="text-sm font-semibold text-foreground">{currentOrg.name}</p>
             <p className="text-xs text-foreground-muted">Organization</p>
           </div>
         </div>
@@ -48,10 +48,10 @@ export default function OrgSwitcher() {
               }`}
             >
               <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Building2 className="w-4 h-4 text-primary" />
+                <Building2 className="w-4 h-4 text-foreground" />
               </div>
               <div className="text-left flex-1">
-                <p className="text-sm font-medium text-primary">{org.name}</p>
+                <p className="text-sm font-medium text-foreground">{org.name}</p>
                 <p className="text-xs text-foreground-muted">{org.slug}</p>
               </div>
               {org.id === currentOrg.id && (

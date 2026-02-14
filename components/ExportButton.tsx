@@ -34,12 +34,12 @@ export default function ExportButton() {
 
   return (
     <div className="card p-6 space-y-4">
-      <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+      <h3 className="text-xl font-bold text-foreground">
         📊 Export Report
       </h3>
 
       <div className="space-y-3">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label className="block text-sm font-medium text-foreground-muted">
           Filter by Status
         </label>
         <select
@@ -68,7 +68,7 @@ export default function ExportButton() {
         </button>
       </div>
 
-      <div className="text-xs text-gray-500 dark:text-gray-400">
+      <div className="text-xs text-foreground-muted">
         💡 Tip: Only verified expenses are included in financial reports
       </div>
     </div>

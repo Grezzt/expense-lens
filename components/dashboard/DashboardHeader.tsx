@@ -29,10 +29,10 @@ export default function DashboardHeader({
     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
       {/* Greeting Section */}
       <div>
-        <h1 className="text-2xl font-bold text-[#022c22]">
+        <h1 className="text-2xl font-bold text-foreground">
           {greeting}, {userName}
         </h1>
-        <p className="text-sm text-[#022c22] mt-1">
+        <p className="text-sm text-foreground-muted mt-1">
           Keuangan bulan ini terlihat stabil
         </p>
       </div>

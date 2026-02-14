@@ -53,7 +53,7 @@ export default function CategoryAllocationChart({ data }: CategoryAllocationChar
 
   return (
     <div className="card p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-white mb-4">
+      <h3 className="text-lg font-semibold text-foreground mb-4">
         Allocation by Category
       </h3>
       <div className="h-64">

@@ -64,40 +64,40 @@ export default function RecentTransactions({ transactions }: RecentTransactionsP
 
   return (
     <div className="card p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-white mb-4">
+      <h3 className="text-lg font-semibold text-foreground mb-4">
         Recent Transactions
       </h3>
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr>
-              <th className="text-left py-3 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">Merchant</th>
-              <th className="text-left py-3 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">Category</th>
-              <th className="text-left py-3 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">Date</th>
-              <th className="text-right py-3 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">Amount</th>
-              <th className="text-center py-3 px-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">Status</th>
+              <th className="text-left py-3 px-2 text-xs font-semibold text-foreground-muted uppercase tracking-wide">Merchant</th>
+              <th className="text-left py-3 px-2 text-xs font-semibold text-foreground-muted uppercase tracking-wide">Category</th>
+              <th className="text-left py-3 px-2 text-xs font-semibold text-foreground-muted uppercase tracking-wide">Date</th>
+              <th className="text-right py-3 px-2 text-xs font-semibold text-foreground-muted uppercase tracking-wide">Amount</th>
+              <th className="text-center py-3 px-2 text-xs font-semibold text-foreground-muted uppercase tracking-wide">Status</th>
             </tr>
           </thead>
           <tbody>
             {transactions.length === 0 ? (
               <tr>
-                <td colSpan={5} className="text-center py-8 text-gray-500">
+                <td colSpan={5} className="text-center py-8 text-foreground-muted">
                   No transactions yet
                 </td>
               </tr>
             ) : (
               transactions.map((transaction) => (
                 <tr key={transaction.id} className="hover:bg-card-hover transition-colors">
-                  <td className="py-3 px-2 text-sm font-medium text-white">
+                  <td className="py-3 px-2 text-sm font-medium text-foreground">
                     {transaction.merchant_name}
                   </td>
-                  <td className="py-3 px-2 text-sm text-gray-300">
+                  <td className="py-3 px-2 text-sm text-foreground-muted">
                     {transaction.category}
                   </td>
-                  <td className="py-3 px-2 text-sm text-gray-300">
+                  <td className="py-3 px-2 text-sm text-foreground-muted">
                     {formatDate(transaction.date)}
                   </td>
-                  <td className="py-3 px-2 text-sm font-semibold text-right text-white">
+                  <td className="py-3 px-2 text-sm font-semibold text-right text-foreground">
                     {formatCurrency(transaction.amount)}
                   </td>
                   <td className="py-3 px-2 text-center">
