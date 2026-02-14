@@ -34,10 +34,11 @@ interface Anomaly {
   amount: number;
   date: string;
   rule: string;
+  severity: 'high' | 'medium' | 'low';
 }
 
 export default function DashboardPage() {
-  const { currentOrg, currentUser } = useAppStore();
+  const { currentOrg, currentUser, setScanDrawerOpen } = useAppStore();
   const [dateFilter, setDateFilter] = useState<'today' | 'week' | 'month' | 'quarter'>('month');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -129,6 +130,7 @@ export default function DashboardPage() {
         amount: exp.amount,
         date: exp.date,
         rule: (exp.raw_data as any)?.anomaly_reason || 'Manual review required',
+        severity: 'medium', // Default severity since it's not in DB yet
       }));
     } catch (error) {
       console.error('Error fetching anomalies:', error);
@@ -144,7 +146,7 @@ export default function DashboardPage() {
   };
 
   const handleScanClick = () => {
-    window.location.href = '/expenses/scan';
+    setScanDrawerOpen(true);
   };
 
   const handleDateFilterChange = (filter: string) => {

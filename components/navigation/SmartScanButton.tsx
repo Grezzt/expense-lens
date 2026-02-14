@@ -4,11 +4,16 @@ import { useState } from 'react';
 import { Camera } from 'lucide-react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRouter } from 'next/navigation';
+import { useAppStore } from '@/store/useAppStore';
 
 export default function SmartScanButton() {
   const { canAccessRoute } = usePermissions();
-  const router = useRouter();
+  const { setScanDrawerOpen } = useAppStore();
   const [isHovered, setIsHovered] = useState(false);
+
+  // router is not needed for this action anymore, but might be needed for other things?
+  // keeping it if needed, or removing if unused.
+  // It was used for router.push.
 
   // Only show for users who can create expenses
   if (!canAccessRoute(['owner', 'admin', 'accountant', 'member'])) {
@@ -16,8 +21,7 @@ export default function SmartScanButton() {
   }
 
   const handleClick = () => {
-    // Navigate to scan/upload page (to be created)
-    router.push('/expenses/scan');
+    setScanDrawerOpen(true);
   };
 
   return (

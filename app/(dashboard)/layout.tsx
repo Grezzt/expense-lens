@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/useAppStore';
 import Sidebar from '@/components/navigation/Sidebar';
 import SmartScanButton from '@/components/navigation/SmartScanButton';
+import CreateExpenseDrawer from '@/components/expenses/CreateExpenseDrawer';
 
 export default function DashboardLayout({
   children,
@@ -12,7 +13,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { currentOrg } = useAppStore();
+  const { currentOrg, isScanDrawerOpen, setScanDrawerOpen } = useAppStore();
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
@@ -51,6 +52,12 @@ export default function DashboardLayout({
 
       {/* Floating Scan Button */}
       <SmartScanButton />
+
+      {/* Global Expense Drawer */}
+      <CreateExpenseDrawer
+        isOpen={isScanDrawerOpen}
+        onClose={() => setScanDrawerOpen(false)}
+      />
     </div>
   );
 }
