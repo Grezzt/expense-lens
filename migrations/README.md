@@ -13,6 +13,7 @@ Migrations are numbered sequentially and should be run in order:
 5. **005_create_organization_members_table.sql** - Creates the `organization_members` table for user-organization relationships with roles
 6. **006_update_expenses_table.sql** - Adds `organization_id` and `created_by` columns to expenses table
 7. **007_create_rls_policies.sql** - Implements Row Level Security policies for multi-tenant data isolation
+8. **008_integrate_supabase_auth.sql** - Integrates Supabase Auth with users table using triggers
 
 ## How to Run Migrations
 
@@ -34,11 +35,12 @@ psql $DATABASE_URL -f migrations/004_create_organizations_table.sql
 psql $DATABASE_URL -f migrations/005_create_organization_members_table.sql
 psql $DATABASE_URL -f migrations/006_update_expenses_table.sql
 psql $DATABASE_URL -f migrations/007_create_rls_policies.sql
+psql $DATABASE_URL -f migrations/008_integrate_supabase_auth.sql
 ```
 
 ## Migration Order
 
-⚠️ **Important**: Always run migrations in numerical order (001 → 007)
+⚠️ **Important**: Always run migrations in numerical order (001 → 008)
 
 ## Data Migration
 

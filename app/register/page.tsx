@@ -5,22 +5,51 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { FcGoogle } from 'react-icons/fc';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleEmailRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
+    // Validation
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setIsLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.fullName,
+          },
+        },
       });
 
       if (error) throw error;
@@ -47,13 +76,13 @@ export default function LoginPage() {
         router.push('/dashboard');
       }
     } catch (err: any) {
-      setError(err.message || 'Invalid email or password');
+      setError(err.message || 'Failed to create account');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleRegister = async () => {
     setIsLoading(true);
     setError('');
 
@@ -67,7 +96,7 @@ export default function LoginPage() {
 
       if (error) throw error;
     } catch (err: any) {
-      setError(err.message || 'Failed to login with Google');
+      setError(err.message || 'Failed to register with Google');
       setIsLoading(false);
     }
   };
@@ -89,10 +118,10 @@ export default function LoginPage() {
         <div className="relative z-10 flex flex-col justify-center items-center w-full p-12 text-white">
           <div className="max-w-md space-y-6">
             <h1 className="text-5xl font-bold leading-tight">
-              ExpenseLens
+              Join ExpenseLens
             </h1>
             <p className="text-xl text-gray-200">
-              AI-Powered Expense Management for Modern Businesses
+              Start managing your expenses smarter with AI
             </p>
 
             {/* Features List */}
@@ -102,8 +131,8 @@ export default function LoginPage() {
                   <span className="text-primary font-bold">✓</span>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Smart OCR Extraction</h3>
-                  <p className="text-gray-300 text-sm">Automatically extract data from receipts using AI</p>
+                  <h3 className="font-semibold text-lg">Free to Start</h3>
+                  <p className="text-gray-300 text-sm">No credit card required to get started</p>
                 </div>
               </div>
 
@@ -112,8 +141,8 @@ export default function LoginPage() {
                   <span className="text-primary font-bold">✓</span>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Auto-Categorization</h3>
-                  <p className="text-gray-300 text-sm">AI categorizes expenses based on merchant names</p>
+                  <h3 className="font-semibold text-lg">AI-Powered</h3>
+                  <p className="text-gray-300 text-sm">Automatic categorization and data extraction</p>
                 </div>
               </div>
 
@@ -122,8 +151,8 @@ export default function LoginPage() {
                   <span className="text-primary font-bold">✓</span>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Team Collaboration</h3>
-                  <p className="text-gray-300 text-sm">Manage expenses across your organization</p>
+                  <h3 className="font-semibold text-lg">Secure & Private</h3>
+                  <p className="text-gray-300 text-sm">Your data is encrypted and protected</p>
                 </div>
               </div>
             </div>
@@ -131,7 +160,7 @@ export default function LoginPage() {
             {/* Decorative Element */}
             <div className="mt-12 pt-8 border-t border-secondary/30">
               <p className="text-sm text-gray-300">
-                Trusted by modern businesses for expense tracking and financial management
+                Join thousands of businesses already using ExpenseLens
               </p>
             </div>
           </div>
@@ -142,7 +171,7 @@ export default function LoginPage() {
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
       </div>
 
-      {/* Right Side - Login Form */}
+      {/* Right Side - Register Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-md space-y-8">
           {/* Logo for Mobile */}
@@ -153,8 +182,8 @@ export default function LoginPage() {
 
           {/* Header */}
           <div className="text-center lg:text-left">
-            <h2 className="text-3xl font-bold text-primary">Welcome Back</h2>
-            <p className="text-gray-600 mt-2">Sign in to your account</p>
+            <h2 className="text-3xl font-bold text-primary">Create Account</h2>
+            <p className="text-gray-600 mt-2">Sign up to get started</p>
           </div>
 
           {/* Error Message */}
@@ -166,7 +195,7 @@ export default function LoginPage() {
 
           {/* Google OAuth Button */}
           <button
-            onClick={handleGoogleLogin}
+            onClick={handleGoogleRegister}
             disabled={isLoading}
             className="w-full flex items-center justify-center gap-3 px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
@@ -180,21 +209,39 @@ export default function LoginPage() {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-background text-gray-500">Or sign in with email</span>
+              <span className="px-4 bg-background text-gray-500">Or register with email</span>
             </div>
           </div>
 
-          {/* Login Form */}
-          <form onSubmit={handleEmailLogin} className="space-y-6">
+          {/* Register Form */}
+          <form onSubmit={handleEmailRegister} className="space-y-6">
+            <div>
+              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+                Full Name
+              </label>
+              <input
+                id="fullName"
+                name="fullName"
+                type="text"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                placeholder="John Doe"
+                className="input"
+                required
+                disabled={isLoading}
+              />
+            </div>
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Your Email
+                Email Address
               </label>
               <input
                 id="email"
+                name="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleInputChange}
                 placeholder="user123@example.com"
                 className="input"
                 required
@@ -208,9 +255,29 @@ export default function LoginPage() {
               </label>
               <input
                 id="password"
+                name="password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="••••••••"
+                className="input"
+                required
+                disabled={isLoading}
+                minLength={6}
+              />
+              <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
                 placeholder="••••••••"
                 className="input"
                 required
@@ -218,30 +285,20 @@ export default function LoginPage() {
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input type="checkbox" className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-secondary" />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
-              </label>
-              <a href="/forgot-password" className="text-sm text-primary hover:text-primary-600 font-medium">
-                Forgot password?
-              </a>
-            </div>
-
             <button
               type="submit"
               disabled={isLoading}
               className="w-full btn btn-primary py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Signing in...' : 'Login'}
+              {isLoading ? 'Creating account...' : 'Create Account'}
             </button>
           </form>
 
-          {/* Register Link */}
+          {/* Login Link */}
           <p className="text-center text-sm text-gray-600">
-            Don't have an account?{' '}
-            <a href="/register" className="text-primary hover:text-primary-600 font-semibold">
-              Register
+            Already have an account?{' '}
+            <a href="/" className="text-primary hover:text-primary-600 font-semibold">
+              Login
             </a>
           </p>
         </div>
@@ -249,4 +306,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
