@@ -32,9 +32,7 @@ export default function NavItem({ icon: Icon, label, route, badge, visibleTo, hi
       className={`flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all ${
         isActive
           ? 'bg-primary text-white'
-          : highlight
-          ? 'hover:bg-secondary/10 text-primary'
-          : 'hover:bg-card-hover text-foreground'
+          : 'hover:bg-card-hover text-primary'
       }`}
     >
       <div className="flex items-center gap-3">

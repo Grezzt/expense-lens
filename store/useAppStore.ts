@@ -5,6 +5,7 @@ interface Organization {
   id: string;
   name: string;
   slug: string;
+  description?: string;
 }
 
 interface User {

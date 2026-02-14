@@ -12,7 +12,7 @@
 
   /* Text Colors */
   --foreground: #022c22; /* Primary color for text */
-  --foreground-muted: #5a6b65; /* Muted text (between primary and background) */
+  --foreground-muted: #022c22; /* Muted text (between primary and background) */
   --text-on-primary: #f1f1f1; /* Text on primary background */
   --text-on-secondary: #022c22; /* Text on secondary background */
 
@@ -85,17 +85,30 @@ body {
 
 /* Smooth animations */
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-in;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -161,11 +174,42 @@ body {
   @apply w-full px-4 py-2 rounded-lg transition-all duration-200;
   background-color: var(--input);
   border: 1px solid var(--border);
-  color: var(--foreground);
+  color: var(--primary) !important;
+  font-weight: 500;
+}
+
+.input::placeholder {
+  color: var(--foreground-muted);
+  opacity: 0.5;
+  font-weight: 400;
 }
 
 .input:focus {
   outline: none;
   border-color: var(--border-focus);
   box-shadow: 0 0 0 3px rgba(191, 216, 82, 0.1);
+}
+
+/* Ensure text inputs have primary color with high specificity */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea,
+select {
+  color: var(--primary) !important;
+  -webkit-text-fill-color: var(--primary) !important;
+  font-weight: 500;
+}
+
+/* Fix autofill background and text color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  -webkit-text-fill-color: var(--primary) !important;
+  color: var(--primary) !important;
 }

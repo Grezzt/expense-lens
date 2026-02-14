@@ -141,7 +141,7 @@ export async function createOrganization(
 
 /**
  * Initialize user data after login
- * Returns user profile, organizations, and default org
+ * Returns user profile and organizations (NO auto-create)
  */
 export async function initializeUserData(userId: string) {
   try {
@@ -155,30 +155,12 @@ export async function initializeUserData(userId: string) {
       throw new Error('User profile not found');
     }
 
-    // If user has no organizations, create a default one
-    let organizations = orgMembers.map(m => m.organization);
-    let defaultOrg = organizations[0];
-    let userRole = orgMembers[0]?.role;
-
-    if (organizations.length === 0) {
-      const newOrg = await createOrganization(
-        userId,
-        `${profile.full_name}'s Organization`,
-        `${profile.email.split('@')[0]}-org`
-      );
-
-      if (newOrg) {
-        defaultOrg = newOrg;
-        organizations = [newOrg];
-        userRole = 'owner';
-      }
-    }
+    // Return organizations without auto-creating
+    const organizations = orgMembers.map(m => m.organization);
 
     return {
       user: profile,
       organizations,
-      defaultOrg,
-      userRole,
     };
   } catch (error) {
     console.error('Error initializing user data:', error);

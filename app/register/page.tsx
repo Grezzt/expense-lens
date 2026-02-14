@@ -57,11 +57,11 @@ export default function RegisterPage() {
       if (data.user) {
         // Initialize user data
         const { initializeUserData } = await import('@/lib/user-service');
-        const { user, organizations, defaultOrg, userRole } = await initializeUserData(data.user.id);
+        const { user, organizations } = await initializeUserData(data.user.id);
 
         // Set app state
         const { useAppStore } = await import('@/store/useAppStore');
-        const { setCurrentUser, setUserOrgs, setCurrentOrg, setUserRole } = useAppStore.getState();
+        const { setCurrentUser, setUserOrgs } = useAppStore.getState();
 
         setCurrentUser({
           id: user.id,
@@ -69,11 +69,9 @@ export default function RegisterPage() {
           full_name: user.full_name,
         });
         setUserOrgs(organizations);
-        setCurrentOrg(defaultOrg);
-        setUserRole(userRole);
 
-        // Redirect to dashboard
-        router.push('/dashboard');
+        // Redirect to organizations page
+        router.push('/organizations');
       }
     } catch (err: any) {
       setError(err.message || 'Failed to create account');

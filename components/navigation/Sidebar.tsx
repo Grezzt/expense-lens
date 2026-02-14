@@ -62,7 +62,7 @@ export default function Sidebar() {
 
         {/* Finance Office */}
         <div className="mb-6">
-          <p className="text-xs font-semibold text-foreground-muted uppercase tracking-wide px-4 mb-2">
+          <p className="text-xs font-semibold text-primary uppercase tracking-wide px-4 mb-2">
             Finance Office
           </p>
           <NavItem
@@ -88,7 +88,7 @@ export default function Sidebar() {
 
         {/* Organization */}
         <div className="mb-6">
-          <p className="text-xs font-semibold text-foreground-muted uppercase tracking-wide px-4 mb-2">
+          <p className="text-xs font-semibold text-primary uppercase tracking-wide px-4 mb-2">
             Organization
           </p>
           <NavItem

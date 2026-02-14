@@ -16,6 +16,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Redirect to dashboard after OAuth callback
-  return NextResponse.redirect(new URL('/dashboard', request.url));
+  // Redirect to organizations page after OAuth callback
+  return NextResponse.redirect(new URL('/organizations', request.url));
 }
