@@ -147,6 +147,18 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
     }
   };
 
+  // Role State
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  // Fetch role on mount or org change
+  useEffect(() => {
+    if (currentOrg && currentUser) {
+        import('@/lib/supabase').then(({ getUserRole }) => {
+            getUserRole(currentOrg.id, currentUser.id).then(role => setUserRole(role));
+        });
+    }
+  }, [currentOrg, currentUser]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -158,6 +170,10 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
     setLoading(true);
 
     try {
+        // Force DRAFT status for ALL roles (User Request)
+        // This ensures every expense goes through the Approval workflow
+        const status = 'DRAFT';
+
         await createExpense({
             organization_id: currentOrg.id,
             created_by: currentUser.id,
@@ -168,7 +184,7 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
             description: formData.description,
             items: formData.items,
             image_url: uploadedImageUrl || '',
-            status: 'VERIFIED',
+            status: status,
             raw_data: rawData || {},
         });
 

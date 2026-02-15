@@ -17,7 +17,11 @@ export default function MyExpensesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<string>(''); // 'VERIFIED', 'DRAFT', etc.
+
+  // Date Filter State
   const [dateSort, setDateSort] = useState<'newest' | 'oldest'>('newest');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   // Filter Dropdown Visibility
   const [showCategoryFilter, setShowCategoryFilter] = useState(false);
@@ -88,7 +92,19 @@ export default function MyExpensesPage() {
         // Status Filter
         const matchesStatus = selectedStatus ? expense.status === selectedStatus : true;
 
-        return matchesSearch && matchesCategory && matchesStatus;
+        // Date Range Filter
+        let matchesDate = true;
+        if (startDate || endDate) {
+            const expDate = new Date(expense.date);
+            if (startDate) {
+                matchesDate = matchesDate && expDate >= new Date(startDate);
+            }
+            if (endDate) {
+                matchesDate = matchesDate && expDate <= new Date(endDate);
+            }
+        }
+
+        return matchesSearch && matchesCategory && matchesStatus && matchesDate;
     })
     .sort((a, b) => {
         const dateA = new Date(a.date).getTime();
@@ -234,7 +250,7 @@ export default function MyExpensesPage() {
                     )}
                 </div>
 
-                {/* Date Filter/Sort */}
+                {/* Date Filter & Sort */}
                <div className="relative" onClick={(e) => e.stopPropagation()}>
                     <button
                          onClick={() => {
@@ -242,45 +258,90 @@ export default function MyExpensesPage() {
                              setShowCategoryFilter(false);
                              setShowStatusFilter(false);
                          }}
-                         className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors border bg-white text-foreground border-border hover:bg-gray-50`}
+                         className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
+                             (startDate || endDate)
+                             ? 'bg-[#022c22] text-white border-[#022c22]'
+                             : 'bg-white text-foreground border-border hover:bg-gray-50'
+                         }`}
                     >
-                        <span>Date: {dateSort === 'newest' ? 'Newest First' : 'Oldest First'}</span>
+                        <span>Date: {(startDate || endDate) ? 'Filtered' : (dateSort === 'newest' ? 'Newest' : 'Oldest')}</span>
                         <ChevronDown className="w-4 h-4" />
                     </button>
 
                     {showDateFilter && (
-                        <div className="absolute top-full left-0 mt-2 w-48 bg-[#022c22] border border-white/10 rounded-xl shadow-xl z-20 overflow-hidden animate-scale-in">
-                            <div className="p-2">
-                                <button
-                                    onClick={() => { setDateSort('newest'); setShowDateFilter(false); }}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-1 transition-colors ${
-                                        dateSort === 'newest' ? 'bg-[#bfd852] text-[#022c22] font-semibold' : 'text-white hover:bg-white/10'
-                                    }`}
-                                >
-                                    Newest First
-                                </button>
-                                <button
-                                    onClick={() => { setDateSort('oldest'); setShowDateFilter(false); }}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                                        dateSort === 'oldest' ? 'bg-[#bfd852] text-[#022c22] font-semibold' : 'text-white hover:bg-white/10'
-                                    }`}
-                                >
-                                    Oldest First
-                                </button>
+                        <div className="absolute top-full left-0 mt-2 w-72 bg-[#022c22] border border-white/10 rounded-xl shadow-xl z-20 overflow-hidden animate-scale-in p-4">
+                            {/* Sort Options */}
+                            <div className="mb-4">
+                                <label className="text-xs text-white/50 uppercase font-semibold mb-2 block">Sort Order</label>
+                                <div className="flex gap-2">
+                                     <button
+                                        onClick={() => setDateSort('newest')}
+                                        className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium transition-colors ${
+                                            dateSort === 'newest' ? 'bg-[#bfd852] text-[#022c22]' : 'bg-white/10 text-white hover:bg-white/20'
+                                        }`}
+                                    >
+                                        Newest
+                                    </button>
+                                    <button
+                                        onClick={() => setDateSort('oldest')}
+                                        className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium transition-colors ${
+                                            dateSort === 'oldest' ? 'bg-[#bfd852] text-[#022c22]' : 'bg-white/10 text-white hover:bg-white/20'
+                                        }`}
+                                    >
+                                        Oldest
+                                    </button>
+                                </div>
                             </div>
+
+                            {/* Date Range Inputs */}
+                            <div>
+                                <label className="text-xs text-white/50 uppercase font-semibold mb-2 block">Date Range</label>
+                                <div className="space-y-2">
+                                    <div className="flex flex-col gap-1">
+                                        <span className="text-[10px] text-white/40">From</span>
+                                        <input
+                                            type="date"
+                                            value={startDate}
+                                            onChange={(e) => setStartDate(e.target.value)}
+                                            className="w-full bg-black/20 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white focus:border-[#bfd852] outline-none"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col gap-1">
+                                         <span className="text-[10px] text-white/40">To</span>
+                                        <input
+                                            type="date"
+                                            value={endDate}
+                                            onChange={(e) => setEndDate(e.target.value)}
+                                            className="w-full bg-black/20 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white focus:border-[#bfd852] outline-none"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => setShowDateFilter(false)}
+                                className="w-full mt-4 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium transition-colors"
+                            >
+                                Apply
+                            </button>
                         </div>
                     )}
                 </div>
 
                 {/* Clear Filter Button */}
-                {(selectedCategory || selectedStatus || searchQuery) && (
+                {(selectedCategory || selectedStatus || searchQuery || startDate || endDate) && (
                     <button
                         onClick={() => {
                             setSelectedCategory('');
                             setSelectedStatus('');
                             setSearchQuery('');
+                            setStartDate('');
+                            setEndDate('');
                             setDateSort('newest');
-                        }}
+                            setShowCategoryFilter(false);
+                            setShowStatusFilter(false);
+                            setShowDateFilter(false);
+                         }}
                         className="flex items-center gap-1.5 px-3 py-2 text-sm text-red-500 hover:text-red-700 font-medium transition-colors ml-auto"
                     >
                         <X className="w-4 h-4" />
