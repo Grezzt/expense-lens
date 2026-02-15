@@ -19,23 +19,9 @@ export async function POST(request: NextRequest) {
     // Validate and correct data
     const validatedData = validateExtractedData(extractedData);
 
-    // Save to Supabase with DRAFT status
-    const expense = await createExpense({
-      image_url: imageUrl,
-      merchant_name: validatedData.merchant_name,
-      amount: validatedData.amount,
-      category: validatedData.category,
-      date: validatedData.date,
-      status: 'DRAFT',
-      raw_data: {
-        ...validatedData,
-        extracted_at: new Date().toISOString(),
-      },
-    });
-
+    // Return extracted data directly (Frontend will handle saving)
     return NextResponse.json({
       success: true,
-      expense,
       extractedData: validatedData,
     });
   } catch (error) {

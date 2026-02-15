@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Upload, X, Check, Loader2, ScanLine, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/useAppStore';
-import { createExpense } from '@/lib/supabase';
+import { createExpense, getAllCategories, type Category } from '@/lib/supabase';
 
 interface CreateExpenseDrawerProps {
   isOpen: boolean;
@@ -18,6 +18,8 @@ interface ExtractedData {
   amount: number;
   date: string;
   category: string;
+  description?: string;
+  items?: string[];
 }
 
 export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDrawerProps) {
@@ -31,6 +33,9 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Data
+  const [categories, setCategories] = useState<Category[]>([]);
+
   // State for data to save
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string>('');
   const [rawData, setRawData] = useState<any>(null);
@@ -40,23 +45,45 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
     merchant_name: '',
     amount: '',
     date: new Date().toISOString().split('T')[0],
-    category: 'Lainnya',
+    category: '', // Default to empty, will be set after fetch
+    description: '',
+    items: [] as string[],
   });
 
-  // Reset state on open
+  // Fetch categories on mount
   useEffect(() => {
-    if (isOpen) {
+    getAllCategories().then((data) => {
+      setCategories(data);
+      if (data.length > 0) {
+        setFormData(prev => ({ ...prev, category: data[0].name }));
+      }
+    }).catch(console.error);
+  }, []);
+
+  // Reset state helper
+  const resetForm = () => {
       setStep('upload');
       setFile(null);
       setPreview('');
       setUploadedImageUrl('');
       setRawData(null);
-      setFormData({
+      setFormData(prev => ({
         merchant_name: '',
         amount: '',
         date: new Date().toISOString().split('T')[0],
-        category: 'Lainnya',
-      });
+        category: categories.length > 0 ? categories[0].name : '',
+        description: '',
+        items: [],
+      }));
+  };
+
+  // Reset state only on open if previously successful
+  useEffect(() => {
+    if (isOpen) {
+        if (step === 'success') {
+            resetForm();
+        }
+        // Otherwise keep the state (persisting scanned data)
     }
   }, [isOpen]);
 
@@ -100,13 +127,15 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
         const data = await extractRes.json();
         setRawData(data.extractedData);
 
-        setFormData({
-            ...formData,
+        setFormData(prev => ({
+            ...prev,
             merchant_name: data.extractedData.merchant_name || '',
             amount: data.extractedData.amount?.toString() || '',
             date: data.extractedData.date || new Date().toISOString().split('T')[0],
-            category: data.extractedData.category || 'Lainnya',
-        });
+            category: data.extractedData.category || prev.category || 'Lainnya',
+            description: data.extractedData.description || '',
+            items: data.extractedData.items || [],
+        }));
         setStep('verify');
       };
     } catch (error) {
@@ -136,6 +165,8 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
             amount: parseFloat(formData.amount) || 0,
             date: formData.date,
             category: formData.category,
+            description: formData.description,
+            items: formData.items,
             image_url: uploadedImageUrl || '',
             status: 'VERIFIED',
             raw_data: rawData || {},
@@ -157,23 +188,41 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
     }
   };
 
-  // Backdrop click handler
-  const handleBackdropClick = (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget) onClose();
-  };
+  // Animation state
+  const [isVisible, setIsVisible] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true);
+    } else {
+      const timer = setTimeout(() => setIsVisible(false), 350); // Slightly longer than animation (300ms)
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  // Handle backdrop click
+  // We can attach click directly to the backdrop element since it's a sibling to the drawer
+  // and sits behind it visually.
+
+  if (!isVisible && !isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end" onClick={handleBackdropClick}>
-      {/* Backdrop with blur */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" />
+    <div className="fixed inset-0 z-50 flex justify-end">
+      {/* Backdrop - Clicking this closes the drawer */}
+      <div
+        className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity cursor-pointer ${
+          isOpen ? 'animate-fade-in' : 'animate-fade-out'
+        }`}
+        onClick={onClose}
+      />
 
       {/* Drawer Panel */}
-      <div className="relative w-full max-w-md h-full bg-[#022c22] text-white shadow-2xl transform transition-transform animate-slide-in-right flex flex-col">
+      <div className={`relative w-full max-w-md h-full glass-drawer text-white shadow-2xl transform transition-transform flex flex-col ${
+        isOpen ? 'animate-slide-in-right' : 'animate-slide-out-right'
+      }`}>
 
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#034433]">
+        <div className="flex items-center justify-between p-6 border-b border-white/10">
           <h2 className="text-xl font-bold flex items-center gap-2">
             Create expense
           </h2>
@@ -184,11 +233,13 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
 
         {/* Tabs (Segmented Control) */}
         <div className="p-6 pb-0">
-          <div className="flex bg-[#034433] rounded-lg p-1">
+          <div className="flex bg-black/20 rounded-xl p-1 backdrop-blur-md">
             <button
               onClick={() => setActiveTab('manual')}
-              className={`flex-1 py-2 rounded-md text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-                activeTab === 'manual' ? 'bg-[#bfd852] text-[#022c22]' : 'text-gray-400 hover:text-white'
+              className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ease-out flex items-center justify-center gap-2 ${
+                activeTab === 'manual'
+                ? 'bg-[#bfd852] text-[#022c22] shadow-lg shadow-[#bfd852]/20 scale-100'
+                : 'text-gray-400 hover:text-white hover:bg-white/5 scale-95'
               }`}
             >
               <FileText className="w-4 h-4" />
@@ -196,8 +247,10 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
             </button>
             <button
               onClick={() => { setActiveTab('scan'); if(step === 'success') setStep('upload'); }}
-              className={`flex-1 py-2 rounded-md text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-                activeTab === 'scan' ? 'bg-[#bfd852] text-[#022c22]' : 'text-gray-400 hover:text-white'
+              className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ease-out flex items-center justify-center gap-2 ${
+                activeTab === 'scan'
+                ? 'bg-[#bfd852] text-[#022c22] shadow-lg shadow-[#bfd852]/20 scale-100'
+                : 'text-gray-400 hover:text-white hover:bg-white/5 scale-95'
               }`}
             >
               <ScanLine className="w-4 h-4" />
@@ -222,16 +275,17 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
                     setIsDragging(false);
                     e.dataTransfer.files?.[0] && handleFileSelect(e.dataTransfer.files[0]);
                   }}
-                  className={`flex-1 border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all ${
-                    isDragging ? 'border-[#bfd852] bg-[#034433]' : 'border-[#034433] hover:border-[#bfd852] hover:bg-[#034433]/50'
+                  className={`flex-1 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ease-out group ${
+                    isDragging
+                    ? 'border-[#bfd852] bg-[#bfd852]/10 scale-[1.02]'
+                    : 'border-white/10 hover:border-[#bfd852]/50 hover:bg-white/5'
                   }`}
                 >
                   <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])} />
 
-                  <div className="w-24 h-24 bg-[#034433] rounded-full flex items-center justify-center mb-6 relative group">
-                     <div className="absolute inset-0 bg-[#bfd852] rounded-full opacity-0 group-hover:opacity-10 transition-opacity" />
-                     <img src="/icons/receipt-illustration.svg" alt="" className="w-12 h-12 opacity-50" onError={(e) => e.currentTarget.style.display='none'} />
-                     <ScanLine className="w-10 h-10 text-[#bfd852]" />
+                  <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6 relative group-hover:scale-110 transition-transform duration-300">
+                     <div className="absolute inset-0 bg-[#bfd852] rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl" />
+                     <ScanLine className="w-10 h-10 text-[#bfd852] group-hover:text-[#d0ea62] transition-colors" />
                   </div>
 
                   <h3 className="text-xl font-bold mb-2">Upload receipts</h3>
@@ -252,7 +306,6 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
                     <Loader2 className="w-10 h-10 text-[#bfd852] animate-spin" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">Analyzing Receipt...</h3>
-                  <p className="text-gray-400 text-sm">Extracting details with AI magic ✨</p>
                 </div>
               )}
 
@@ -261,14 +314,14 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
                     <div className="mb-6 h-40 w-full rounded-xl overflow-hidden border border-[#034433] relative">
                          <img src={preview} className="w-full h-full object-cover opacity-80" />
                          <div className="absolute inset-0 flex items-center justify-center">
-                            <button onClick={() => { setStep('upload'); setFile(null); }} className="bg-black/50 hover:bg-black/70 px-4 py-2 rounded-full text-xs font-medium backdrop-blur-sm transition-colors">
+                            <button onClick={resetForm} className="bg-black/50 hover:bg-black/70 px-4 py-2 rounded-full text-xs font-medium backdrop-blur-sm transition-colors">
                                 Change Receipt
                             </button>
                          </div>
                     </div>
                     {/* Render Form for Verification */}
                     <form id="verify-form" onSubmit={handleSubmit} className="space-y-4">
-                        <FormFields formData={formData} setFormData={setFormData} />
+                        <FormFields formData={formData} setFormData={setFormData} categories={categories} />
                     </form>
                 </div>
               )}
@@ -289,7 +342,7 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
           {activeTab === 'manual' && step !== 'success' && (
              <form id="manual-form" onSubmit={handleSubmit} className="space-y-6 animate-fade-in h-full flex flex-col">
                 <div className="flex-1 space-y-4">
-                    <FormFields formData={formData} setFormData={setFormData} />
+                    <FormFields formData={formData} setFormData={setFormData} categories={categories} />
                 </div>
              </form>
           )}
@@ -315,29 +368,40 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
 }
 
 // Reusable Form Fields Component
-function FormFields({ formData, setFormData }: { formData: any, setFormData: any }) {
+function FormFields({ formData, setFormData, categories }: { formData: any, setFormData: any, categories: Category[] }) {
     return (
         <>
             <div className="space-y-2">
-                <label className="text-xs text-gray-400 uppercase tracking-wide">Merchant</label>
+                <label className="text-xs text-secondary/80 uppercase tracking-widest font-semibold ml-1">Merchant</label>
                 <input
                 type="text"
                 value={formData.merchant_name}
                 onChange={(e) => setFormData({...formData, merchant_name: e.target.value})}
-                className="w-full bg-[#034433] border border-transparent focus:border-[#bfd852] rounded-lg px-4 py-3 text-white placeholder-gray-500 outline-none transition-all"
+                style={{ color: '#ffffff' }}
+                className="w-full bg-black/20 border border-white/10 focus:border-[#bfd852] rounded-xl px-4 py-3.5 !text-white placeholder-white/50 outline-none transition-all duration-300 focus:bg-black/40 focus:shadow-[0_0_15px_rgba(191,216,82,0.1)]"
                 placeholder="e.g. Starbucks"
                 required
                 />
             </div>
             <div className="space-y-2">
-                <label className="text-xs text-gray-400 uppercase tracking-wide">Amount</label>
-                <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">Rp</span>
+                <label className="text-xs text-secondary/80 uppercase tracking-widest font-semibold ml-1">Amount</label>
+                <div className="relative group">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 group-focus-within:text-[#bfd852] transition-colors">Rp</span>
                     <input
                     type="number"
+                    min="0"
                     value={formData.amount}
-                    onChange={(e) => setFormData({...formData, amount: e.target.value})}
-                    className="w-full bg-[#034433] border border-transparent focus:border-[#bfd852] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 outline-none transition-all"
+                    onChange={(e) => {
+                        const val = parseFloat(e.target.value);
+                        if (val < 0) return; // Prevent negative
+                        setFormData({...formData, amount: e.target.value})
+                    }}
+                    onKeyDown={(e) => {
+                        if (e.key === '-' || e.key === 'e') {
+                            e.preventDefault();
+                        }
+                    }}
+                    className="w-full bg-black/20 border border-white/10 focus:border-[#bfd852] rounded-xl pl-10 pr-4 py-3.5 !text-white placeholder-white/50 outline-none transition-all duration-300 focus:bg-black/40 focus:shadow-[0_0_15px_rgba(191,216,82,0.1)]"
                     placeholder="0"
                     required
                     />
@@ -345,30 +409,92 @@ function FormFields({ formData, setFormData }: { formData: any, setFormData: any
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <label className="text-xs text-gray-400 uppercase tracking-wide">Date</label>
+                    <label className="text-xs text-secondary/80 uppercase tracking-widest font-semibold ml-1">Date</label>
                     <input
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({...formData, date: e.target.value})}
-                    className="w-full bg-[#034433] border border-transparent focus:border-[#bfd852] rounded-lg px-4 py-3 text-white outline-none transition-all [color-scheme:dark]"
+                    className="w-full bg-black/20 border border-white/10 focus:border-[#bfd852] rounded-xl px-4 py-3.5 text-white outline-none transition-all duration-300 focus:bg-black/40 [color-scheme:dark]"
                     required
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-xs text-gray-400 uppercase tracking-wide">Category</label>
+                    <label className="text-xs text-secondary/80 uppercase tracking-widest font-semibold ml-1">Category</label>
                     <select
                     value={formData.category}
                     onChange={(e) => setFormData({...formData, category: e.target.value})}
-                    className="w-full bg-[#034433] border border-transparent focus:border-[#bfd852] rounded-lg px-4 py-3 text-white outline-none transition-all appearance-none cursor-pointer"
+                    style={{ color: '#ffffff' }}
+                    className="w-full bg-black/20 border border-white/10 focus:border-[#bfd852] rounded-xl px-4 py-3.5 !text-white outline-none transition-all duration-300 focus:bg-black/40 appearance-none cursor-pointer"
                     >
-                        <option value="Lainnya">Lainnya</option>
-                        <option value="Makan & Minum">Makan & Minum</option>
-                        <option value="Transportasi">Transportasi</option>
-                        <option value="Belanja">Belanja</option>
-                        <option value="Hiburan">Hiburan</option>
+                        <option value="" disabled className="bg-[#022c22] text-white">Select category</option>
+                        {categories.map((cat) => (
+                            <option key={cat.id} value={cat.name} className="bg-[#022c22] text-white my-1">
+                                {cat.name}
+                            </option>
+                        ))}
                     </select>
                 </div>
             </div>
-        </>
+
+            <div className="space-y-2 mt-4 ml-1">
+                <label className="text-xs text-secondary/80 uppercase tracking-widest font-semibold ml-1">Description (Optional)</label>
+                <textarea
+                rows={3}
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                style={{ color: '#ffffff' }}
+                className="w-full bg-black/20 border border-white/10 focus:border-[#bfd852] rounded-xl px-4 py-3.5 !text-white placeholder-white/50 outline-none transition-all duration-300 focus:bg-black/40 resize-none"
+                placeholder="Details about items (e.g. Ayam 20k, Teh 5k)"
+                />
+            </div>
+
+            {/* Items List */}
+            <div className="space-y-3 mt-4 ml-1">
+                <div className="flex items-center justify-between">
+                    <label className="text-xs text-secondary/80 uppercase tracking-widest font-semibold ml-1">Items List</label>
+                    <button
+                        type="button"
+                        onClick={() => setFormData({...formData, items: [...(formData.items || []), '']})}
+                        className="text-xs text-[#bfd852] hover:text-[#d0ea62] font-semibold flex items-center gap-1 transition-colors"
+                    >
+                         + Add Item
+                    </button>
+                </div>
+
+                <div className="space-y-2">
+                    {formData.items?.map((item: string, index: number) => (
+                        <div key={index} className="flex gap-2">
+                            <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => {
+                                    const newItems = [...(formData.items || [])];
+                                    newItems[index] = e.target.value;
+                                    setFormData({...formData, items: newItems});
+                                }}
+                                className="flex-1 bg-black/20 border border-white/10 focus:border-[#bfd852] rounded-xl px-4 py-2 text-sm !text-white placeholder-white/50 outline-none transition-all duration-300 focus:bg-black/40"
+                                style={{ color: '#ffffff' }}
+                                placeholder={`Item ${index + 1}`}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const newItems = formData.items.filter((_: string, i: number) => i !== index);
+                                    setFormData({...formData, items: newItems});
+                                }}
+                                className="p-2 text-white/50 hover:text-red-400 transition-colors"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                    ))}
+                    {(!formData.items || formData.items.length === 0) && (
+                         <div className="text-center py-4 bg-black/10 rounded-xl border border-dashed border-white/10 text-white/30 text-sm">
+                             No items extracted
+                         </div>
+                    )}
+                </div>
+            </div>
+            </>
     );
 }

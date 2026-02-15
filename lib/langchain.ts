@@ -22,6 +22,7 @@ export interface ExtractedExpenseData {
   date: string;
   currency: string;
   items?: string[];
+  description?: string;
   confidence: number;
 }
 
@@ -77,7 +78,8 @@ export async function extractExpenseFromImage(imageUrl: string): Promise<Extract
   "amount": total amount as a number (without currency symbol),
   "currency": "currency code (e.g., IDR, USD)",
   "date": "date in YYYY-MM-DD format",
-  "items": ["list of items purchased (optional)"],
+  "items": ["list of items purchased with prices"],
+  "description": "summary of items purchased with prices (e.g., 'Ayam Goreng 20k, Es Teh 5k')",
   "confidence": confidence score from 0 to 1
 }
 
@@ -132,6 +134,7 @@ Rules:
       currency: extractedData.currency || "IDR",
       date: extractedData.date || new Date().toISOString().split('T')[0],
       items: extractedData.items || [],
+      description: extractedData.description || "",
       category,
       confidence: extractedData.confidence || 0.5,
     };
@@ -150,6 +153,7 @@ export function validateExtractedData(data: ExtractedExpenseData): ExtractedExpe
     amount: Math.abs(data.amount), // Ensure positive amount
     date: data.date || new Date().toISOString().split('T')[0],
     merchant_name: data.merchant_name.trim() || "Unknown Merchant",
+    description: data.description || "",
     category: data.category || "Lainnya",
     confidence: Math.min(Math.max(data.confidence, 0), 1), // Clamp between 0-1
   };

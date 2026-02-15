@@ -103,6 +103,19 @@ body {
   }
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
 @keyframes scaleIn {
   from {
     opacity: 0;
@@ -112,6 +125,39 @@ body {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-out-right {
+  animation: slideOutRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.glass-drawer {
+    background: rgba(2, 44, 34, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Custom scrollbar */
@@ -201,8 +247,7 @@ input[type="tel"],
 input[type="url"],
 textarea,
 select {
-  color: var(--primary) !important;
-  -webkit-text-fill-color: var(--primary) !important;
+  color: var(--primary);
   font-weight: 500;
 }
 
@@ -213,5 +258,4 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
   -webkit-text-fill-color: var(--primary) !important;
-  color: var(--primary) !important;
 }

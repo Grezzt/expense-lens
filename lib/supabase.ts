@@ -46,6 +46,8 @@ export interface Expense {
   merchant_name: string;
   amount: number;
   category: string;
+  description?: string;
+  items?: string[];
   date: string;
   raw_data: Record<string, any>;
   status: 'DRAFT' | 'VERIFIED';
