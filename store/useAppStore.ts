@@ -6,6 +6,7 @@ interface Organization {
   name: string;
   slug: string;
   description?: string;
+  settings?: Record<string, any>;
 }
 
 interface User {

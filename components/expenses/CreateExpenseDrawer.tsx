@@ -50,15 +50,31 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
     items: [] as string[],
   });
 
-  // Fetch categories on mount
+  // Fetch categories on mount and when org changes
   useEffect(() => {
-    getAllCategories().then((data) => {
-      setCategories(data);
-      if (data.length > 0) {
-        setFormData(prev => ({ ...prev, category: data[0].name }));
-      }
+    getAllCategories().then((systemCats) => {
+        let mergedCats = [...systemCats];
+
+        // Merge with Custom Categories from Org Settings
+        if (currentOrg?.settings?.custom_categories) {
+            const customCats = currentOrg.settings.custom_categories.map((name: string) => ({
+                id: `custom-${name}`,
+                name: name,
+                keywords: [],
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+            }));
+            mergedCats = [...mergedCats, ...customCats];
+        }
+
+        setCategories(mergedCats);
+
+        // Data might have loaded before categories, so we check valid category
+        if (mergedCats.length > 0 && !formData.category) {
+             setFormData(prev => ({ ...prev, category: mergedCats[0].name }));
+        }
     }).catch(console.error);
-  }, []);
+  }, [currentOrg]);
 
   // Reset state helper
   const resetForm = () => {

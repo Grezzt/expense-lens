@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { X, Check, Loader2, Trash2 } from 'lucide-react';
 import { Expense, createExpense, getAllCategories, type Category } from '@/lib/supabase'; // We might need an updateExpense function later
 import { supabase } from '@/lib/supabase';
+import { useAppStore } from '@/store/useAppStore';
 
 interface ExpenseDetailDrawerProps {
   isOpen: boolean;
@@ -26,10 +27,26 @@ export default function ExpenseDetailDrawer({ isOpen, onClose, expense, onUpdate
     items: [] as string[],
   });
 
-  // Fetch categories on mount
+  const { currentOrg } = useAppStore(); // Need to import useAppStore
+
+  // Fetch categories on mount and org change
   useEffect(() => {
-    getAllCategories().then(setCategories).catch(console.error);
-  }, []);
+    getAllCategories().then((systemCats) => {
+        let mergedCats = [...systemCats];
+
+        if (currentOrg?.settings?.custom_categories) {
+             const customCats = currentOrg.settings.custom_categories.map((name: string) => ({
+                id: `custom-${name}`,
+                name: name,
+                keywords: [],
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+            }));
+            mergedCats = [...mergedCats, ...customCats];
+        }
+        setCategories(mergedCats);
+    }).catch(console.error);
+  }, [currentOrg]);
 
   // Hydrate form when expense changes
   useEffect(() => {

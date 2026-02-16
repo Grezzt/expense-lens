@@ -97,12 +97,7 @@ export default function Sidebar() {
             route="/organization/members"
             visibleTo={['owner', 'admin']}
           />
-          <NavItem
-            icon={Scale}
-            label="Policies & Rules"
-            route="/organization/policies"
-            visibleTo={['owner', 'admin']}
-          />
+
           <NavItem
             icon={Settings}
             label="Settings"
