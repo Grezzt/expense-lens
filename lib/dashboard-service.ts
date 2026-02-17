@@ -198,3 +198,22 @@ function getPreviousPeriod(filter: 'today' | 'week' | 'month' | 'quarter') {
 
   return { startDate: prevStart, endDate: prevEnd };
 }
+export function getFinancialInsight(stats: DashboardStats): string {
+  const { totalChange, totalExpense } = stats;
+
+  if (totalExpense === 0) {
+    return 'Belum ada pengeluaran periode ini.';
+  }
+
+  if (totalChange > 20) {
+    return 'Pengeluaran naik signifikan. Coba cek detail transaksi.';
+  } else if (totalChange > 5) {
+    return 'Pengeluaran sedikit naik dibanding periode sebelumnya.';
+  } else if (totalChange < -20) {
+    return 'Pengeluaran turun drastis. Bagus untuk tabungan!';
+  } else if (totalChange < -5) {
+    return 'Pengeluaran lebih hemat dari periode sebelumnya.';
+  } else {
+    return 'Keuangan periode ini terlihat stabil.';
+  }
+}

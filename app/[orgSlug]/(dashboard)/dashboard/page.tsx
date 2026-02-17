@@ -12,6 +12,7 @@ import {
   getDashboardStats,
   getSpendingTrend,
   getCategoryAllocation,
+  getFinancialInsight,
   type DashboardStats,
   type SpendingTrendData,
   type CategoryAllocation,
@@ -205,6 +206,7 @@ export default function DashboardPage() {
         onDateFilterChange={handleDateFilterChange}
         currentFilter={dateFilter}
         userRole={userRole}
+        insight={stats ? getFinancialInsight(stats) : undefined}
       />
 
       {/* KPI Cards */}

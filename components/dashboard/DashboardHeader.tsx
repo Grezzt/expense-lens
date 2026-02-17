@@ -10,6 +10,7 @@ interface DashboardHeaderProps {
   onDateFilterChange: (filter: string) => void;
   currentFilter: string;
   userRole?: string | null;
+  insight?: string;
 }
 
 export default function DashboardHeader({
@@ -19,6 +20,7 @@ export default function DashboardHeader({
   onDateFilterChange,
   currentFilter,
   userRole,
+  insight,
 }: DashboardHeaderProps) {
   const dateFilters = [
     { value: 'today', label: 'Hari ini' },
@@ -35,7 +37,7 @@ export default function DashboardHeader({
           {greeting}, {userName}
         </h1>
         <p className="text-sm text-foreground-muted mt-1">
-          Keuangan bulan ini terlihat stabil
+          {insight || 'Keuangan bulan ini terlihat stabil'}
         </p>
       </div>
 
