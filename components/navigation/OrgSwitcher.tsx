@@ -3,17 +3,19 @@
 import { useState } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { ChevronDown, Building2, Settings, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function OrgSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const { currentOrg, userOrgs, setCurrentOrg } = useAppStore();
+  const router = useRouter(); // Need to import useRouter
 
   const handleOrgChange = (org: typeof currentOrg) => {
     if (org) {
       setCurrentOrg(org);
       setIsOpen(false);
-      // Refresh page data when org changes
-      window.location.reload();
+      // Redirect to the dashboard of the new org
+      router.push(`/${org.slug}/dashboard`);
     }
   };
 

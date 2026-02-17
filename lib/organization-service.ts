@@ -202,7 +202,7 @@ export async function regenerateInviteCode(
       .from('organizations')
       .update({
         invite_code: newCode,
-        invite_expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        invite_expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
       })
       .eq('id', orgId);
 
@@ -289,5 +289,56 @@ export async function deleteOrganization(
   } catch (error: any) {
     console.error('Error deleting organization:', error);
     return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Get organization by slug
+ */
+export async function getOrganizationBySlug(slug: string): Promise<Organization | null> {
+  try {
+    const { data, error } = await supabase
+      .from('organizations')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+
+    if (error) {
+       if (error.code !== 'PGRST116') {
+         console.error('Error fetching org by slug:', error);
+       }
+       return null;
+    }
+
+    return data as Organization;
+  } catch (error) {
+    console.error('Error in getOrganizationBySlug:', error);
+    return null;
+  }
+}
+
+/**
+ * Check if user is a member of an organization
+ */
+export async function checkOrganizationMembership(
+  userId: string,
+  orgId: string
+): Promise<{ role: string } | null> {
+  try {
+    const { data: member, error } = await supabase
+      .from('organization_members')
+      .select('role')
+      .eq('organization_id', orgId)
+      .eq('user_id', userId)
+      .single();
+
+    if (error || !member) {
+      return null;
+    }
+
+    return { role: member.role };
+  } catch (error) {
+    console.error('Error checking membership:', error);
+    return null;
   }
 }

@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { initializeUserData } from '@/lib/user-service';
 import { getUserOrganizations, type OrganizationWithRole } from '@/lib/organization-service';
 import { getUserRole } from '@/lib/user-service';
-import { Building2, Plus, LogIn, Users, ChevronRight, Crown, Shield, Eye, User, LogOut } from 'lucide-react';
+import { Building2, Plus, LogIn, Users, ChevronRight, Crown, Shield, Eye, User, LogOut, Settings } from 'lucide-react';
 import CreateOrgModal from '@/components/organizations/CreateOrgModal';
 import JoinOrgModal from '@/components/organizations/JoinOrgModal';
 
@@ -90,8 +90,8 @@ export default function OrganizationsPage() {
       });
       setUserRole(role);
 
-      // Redirect to dashboard
-      router.push('/dashboard');
+      // Redirect to dashboard with slug
+      router.push(`/${org.slug}/dashboard`);
     } catch (error) {
       console.error('Error selecting organization:', error);
     }
@@ -252,9 +252,23 @@ export default function OrganizationsPage() {
                     <Users className="w-4 h-4" />
                     <span>{org.member_count || 0} members</span>
                   </div>
-                  <div className="flex items-center gap-1 text-primary font-medium text-sm group-hover:gap-2 transition-all">
-                    <span>Open</span>
-                    <ChevronRight className="w-4 h-4" />
+                  <div className="flex items-center gap-3">
+                    {org.role === 'owner' && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/${org.slug}/organization/settings`);
+                        }}
+                        className="p-1.5 text-foreground-muted hover:text-primary hover:bg-primary/10 rounded-full transition-colors"
+                        title="Organization Settings"
+                      >
+                        <Settings className="w-4 h-4" />
+                      </button>
+                    )}
+                    <div className="flex items-center gap-1 text-primary font-medium text-sm group-hover:gap-2 transition-all">
+                      <span>Open</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </div>
                   </div>
                 </div>
               </div>

@@ -72,6 +72,8 @@ export default function SettingsPage() {
         if (!currentOrg) return;
         setLoading(true);
 
+        const oldSlug = currentOrg.slug;
+
         try {
             const updated = await updateOrganization(currentOrg.id, {
                 name: formData.name,
@@ -80,6 +82,11 @@ export default function SettingsPage() {
             });
             setCurrentOrg(updated);
             alert('Settings updated successfully');
+
+            if (updated.slug !== oldSlug) {
+                // Redirect to new URL if slug changed
+                window.location.href = `/${updated.slug}/organization/settings`;
+            }
         } catch (error) {
             console.error('Update failed:', error);
             alert('Failed to update settings');

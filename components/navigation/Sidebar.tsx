@@ -22,7 +22,7 @@ import { useRouter } from 'next/navigation';
 export default function Sidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const router = useRouter();
-  const { currentUser, reset } = useAppStore();
+  const { currentUser, currentOrg, reset } = useAppStore();
 
   const handleLogout = () => {
     reset();
@@ -49,13 +49,13 @@ export default function Sidebar() {
           <NavItem
             icon={LayoutDashboard}
             label="Dashboard"
-            route="/dashboard"
+            route={`/${currentOrg?.slug || 'dash'}/dashboard`}
             visibleTo={['owner', 'admin', 'accountant', 'member', 'viewer']}
           />
           <NavItem
             icon={Receipt}
             label="My Expenses"
-            route="/expenses/me"
+            route={`/${currentOrg?.slug || 'dash'}/expenses/me`}
             visibleTo={['owner', 'admin', 'accountant', 'member', 'viewer']}
           />
         </div>
@@ -68,20 +68,20 @@ export default function Sidebar() {
           <NavItem
             icon={Inbox}
             label="Inbox & Approvals"
-            route="/approvals"
+            route={`/${currentOrg?.slug || 'dash'}/approvals`}
             visibleTo={['owner', 'admin', 'accountant']}
             highlight
           />
           <NavItem
             icon={BarChart3}
             label="Reports & Analytics"
-            route="/reports"
+            route={`/${currentOrg?.slug || 'dash'}/reports`}
             visibleTo={['owner', 'admin', 'accountant', 'viewer']}
           />
           <NavItem
             icon={FileSpreadsheet}
             label="Accounting Export"
-            route="/accounting"
+            route={`/${currentOrg?.slug || 'dash'}/accounting`}
             visibleTo={['owner', 'admin', 'accountant']}
           />
         </div>
@@ -94,14 +94,14 @@ export default function Sidebar() {
           <NavItem
             icon={Users}
             label="Members & Roles"
-            route="/organization/members"
+            route={`/${currentOrg?.slug || 'dash'}/organization/members`}
             visibleTo={['owner', 'admin']}
           />
 
           <NavItem
             icon={Settings}
             label="Settings"
-            route="/organization/settings"
+            route={`/${currentOrg?.slug || 'dash'}/organization/settings`}
             visibleTo={['owner', 'admin']}
           />
         </div>
