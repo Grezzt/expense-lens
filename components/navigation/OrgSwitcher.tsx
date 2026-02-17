@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAppStore } from '@/store/useAppStore';
-import { ChevronDown, Building2 } from 'lucide-react';
+import { ChevronDown, Building2, Settings, LogOut } from 'lucide-react';
 
 export default function OrgSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,28 +37,54 @@ export default function OrgSwitcher() {
         <ChevronDown className={`w-4 h-4 text-foreground-muted transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
-      {isOpen && userOrgs.length > 1 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
-          {userOrgs.map((org) => (
-            <button
-              key={org.id}
-              onClick={() => handleOrgChange(org)}
-              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-card-hover transition-colors ${
-                org.id === currentOrg.id ? 'bg-primary/5' : ''
-              }`}
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-50 overflow-hidden">
+          <div className="max-h-64 overflow-y-auto">
+            {userOrgs.map((org) => (
+              <button
+                key={org.id}
+                onClick={() => handleOrgChange(org)}
+                className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-card-hover transition-colors ${
+                  org.id === currentOrg.id ? 'bg-primary/5' : ''
+                }`}
+              >
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Building2 className="w-4 h-4 text-foreground" />
+                </div>
+                <div className="text-left flex-1">
+                  <p className="text-sm font-medium text-foreground">{org.name}</p>
+                  <p className="text-xs text-foreground-muted">{org.slug}</p>
+                </div>
+                {org.id === currentOrg.id && (
+                  <div className="w-2 h-2 rounded-full bg-secondary" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          <div className="border-t border-border p-2 space-y-1">
+             <button
+                onClick={() => window.location.href = '/organizations'}
+                className="w-full flex items-center gap-3 px-2 py-2 hover:bg-card-hover rounded-md transition-colors text-sm text-foreground-muted hover:text-foreground"
             >
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Building2 className="w-4 h-4 text-foreground" />
-              </div>
-              <div className="text-left flex-1">
-                <p className="text-sm font-medium text-foreground">{org.name}</p>
-                <p className="text-xs text-foreground-muted">{org.slug}</p>
-              </div>
-              {org.id === currentOrg.id && (
-                <div className="w-2 h-2 rounded-full bg-secondary" />
-              )}
+                <div className="w-8 h-8 flex items-center justify-center">
+                    <Settings className="w-4 h-4" />
+                </div>
+                Manage Organizations
             </button>
-          ))}
+            <button
+                onClick={() => {
+                    useAppStore.getState().reset();
+                    window.location.href = '/';
+                }}
+                className="w-full flex items-center gap-3 px-2 py-2 hover:bg-red-50 rounded-md transition-colors text-sm text-red-500 hover:text-red-600"
+            >
+                <div className="w-8 h-8 flex items-center justify-center">
+                    <LogOut className="w-4 h-4" />
+                </div>
+                Log Out
+            </button>
+          </div>
         </div>
       )}
     </div>

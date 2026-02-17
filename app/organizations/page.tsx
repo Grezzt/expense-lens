@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { initializeUserData } from '@/lib/user-service';
 import { getUserOrganizations, type OrganizationWithRole } from '@/lib/organization-service';
 import { getUserRole } from '@/lib/user-service';
-import { Building2, Plus, LogIn, Users, ChevronRight, Crown, Shield, Eye, User } from 'lucide-react';
+import { Building2, Plus, LogIn, Users, ChevronRight, Crown, Shield, Eye, User, LogOut } from 'lucide-react';
 import CreateOrgModal from '@/components/organizations/CreateOrgModal';
 import JoinOrgModal from '@/components/organizations/JoinOrgModal';
 
@@ -149,8 +149,8 @@ export default function OrganizationsPage() {
               <p className="text-sm text-foreground-muted mt-1">Select an organization to continue</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="text-right">
-                <p className="text-sm font-medium text-primary">{currentUser?.full_name}</p>
+              <div className="text-right hidden sm:block">
+                <p className="text-sm font-medium text-foreground">{currentUser?.full_name}</p>
                 <p className="text-xs text-foreground-muted">{currentUser?.email}</p>
               </div>
               <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
@@ -158,6 +158,16 @@ export default function OrganizationsPage() {
                   {currentUser?.full_name?.charAt(0) || 'U'}
                 </span>
               </div>
+              <button
+                onClick={() => {
+                   useAppStore.getState().reset();
+                   router.push('/');
+                }}
+                className="ml-2 p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                title="Log Out"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
