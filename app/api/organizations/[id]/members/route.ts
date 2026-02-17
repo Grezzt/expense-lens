@@ -134,6 +134,18 @@ export async function DELETE(
       );
     }
 
+    // Check if user is the last owner
+    const members = await getOrganizationMembers(params.id);
+    const owners = members.filter((m: any) => m.role === 'owner');
+    const memberToRemove = members.find((m: any) => m.users.id === userId);
+
+    if (memberToRemove?.role === 'owner' && owners.length === 1) {
+      return NextResponse.json(
+        { success: false, error: 'Cannot remove the last owner from organization' },
+        { status: 400 }
+      );
+    }
+
     await removeMemberFromOrganization(params.id, userId);
 
     return NextResponse.json({

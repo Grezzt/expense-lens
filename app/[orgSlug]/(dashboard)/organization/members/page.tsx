@@ -23,6 +23,8 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import ConfirmationModal from '@/components/ui/ConfirmationModal';
+
 export default function MembersPage() {
     const { currentOrg, currentUser } = useAppStore();
     const router = useRouter();
@@ -32,6 +34,11 @@ export default function MembersPage() {
     const [inviteCode, setInviteCode] = useState('');
     const [copied, setCopied] = useState(false);
     const [regenerating, setRegenerating] = useState(false);
+
+    // Confirmation States
+    const [showRegenerateConfirm, setShowRegenerateConfirm] = useState(false);
+    const [memberToUpdate, setMemberToUpdate] = useState<{ id: string; role: string } | null>(null);
+    const [memberToRemove, setMemberToRemove] = useState<string | null>(null);
 
     // Fetch Data
     const fetchData = async () => {
@@ -43,8 +50,6 @@ export default function MembersPage() {
             if (!['owner', 'admin'].includes(role || '')) {
                 // Redirect if not authorized (though Sidebar hides it, direct access needs protection)
                // router.push('/dashboard');
-               // keeping it visible but read-only for now might be better UX,
-               // but typically members shouldn't see this based on requirements.
             }
             setCurrentUserRole(role || '');
 
@@ -52,7 +57,7 @@ export default function MembersPage() {
             const membersData = await getOrganizationMembers(currentOrg.id);
             setMembers(membersData || []);
 
-            // Set Invite Code (Assuming it's in currentOrg, might need refresh if not updated in store)
+            // Set Invite Code
             setInviteCode(currentOrg.invite_code || '');
 
         } catch (error) {
@@ -73,16 +78,18 @@ export default function MembersPage() {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const handleRegenerateCode = async () => {
+    const onRegenerateClick = () => {
+        setShowRegenerateConfirm(true);
+    };
+
+    const confirmRegenerate = async () => {
         if (!currentOrg || !currentUser) return;
-        if (!confirm('Are you sure? Old invite codes will stop working.')) return;
 
         setRegenerating(true);
         try {
             const { invite_code, error } = await regenerateInviteCode(currentOrg.id, currentUser.id);
             if (error) throw error;
             setInviteCode(invite_code);
-            alert('New invite code generated.');
         } catch (error) {
             console.error('Regenerate error:', error);
             alert('Failed to regenerate code.');
@@ -91,12 +98,15 @@ export default function MembersPage() {
         }
     };
 
-    const handleRoleChange = async (userId: string, newRole: string) => {
-        if (!currentOrg) return;
-        if (!confirm(`Change this user's role to ${newRole}?`)) return;
+    const onRoleChangeClick = (userId: string, newRole: string) => {
+        setMemberToUpdate({ id: userId, role: newRole });
+    };
+
+    const confirmRoleChange = async () => {
+        if (!currentOrg || !memberToUpdate) return;
 
         try {
-            await updateMemberRole(currentOrg.id, userId, newRole as OrganizationMember['role']);
+            await updateMemberRole(currentOrg.id, memberToUpdate.id, memberToUpdate.role as OrganizationMember['role']);
             fetchData(); // Refresh list
         } catch (error) {
             console.error('Update role error:', error);
@@ -104,12 +114,15 @@ export default function MembersPage() {
         }
     };
 
-    const handleRemoveMember = async (userId: string) => {
-        if (!currentOrg) return;
-        if (!confirm('Are you sure you want to remove this member?')) return;
+    const onRemoveMemberClick = (userId: string) => {
+        setMemberToRemove(userId);
+    };
+
+    const confirmRemoveMember = async () => {
+        if (!currentOrg || !memberToRemove) return;
 
         try {
-            await removeMemberFromOrganization(currentOrg.id, userId);
+            await removeMemberFromOrganization(currentOrg.id, memberToRemove);
             fetchData(); // Refresh list
         } catch (error) {
             console.error('Remove member error:', error);
@@ -161,7 +174,7 @@ export default function MembersPage() {
                                 {copied ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5" />}
                             </button>
                             <button
-                                onClick={handleRegenerateCode}
+                                onClick={onRegenerateClick}
                                 disabled={regenerating}
                                 className="p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-gray-700"
                                 title="Regenerate Code"
@@ -209,7 +222,7 @@ export default function MembersPage() {
                                         {canManage && member.role !== 'owner' && member.user_id !== currentUser?.id ? (
                                             <select
                                                 value={member.role}
-                                                onChange={(e) => handleRoleChange(member.user_id, e.target.value)}
+                                                onChange={(e) => onRoleChangeClick(member.user_id, e.target.value)}
                                                 className="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-primary focus:border-primary block p-2 outline-none cursor-pointer hover:border-gray-400 transition-colors"
                                             >
                                                 <option value="modules">Select Role...</option>
@@ -235,7 +248,7 @@ export default function MembersPage() {
                                         <td className="px-6 py-4 text-right">
                                             {member.role !== 'owner' && member.user_id !== currentUser?.id && (
                                                 <button
-                                                    onClick={() => handleRemoveMember(member.user_id)}
+                                                    onClick={() => onRemoveMemberClick(member.user_id)}
                                                     className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors"
                                                     title="Remove Member"
                                                 >
@@ -250,6 +263,37 @@ export default function MembersPage() {
                     </table>
                 </div>
             </div>
+
+            {/* Confirmation Modals */}
+            <ConfirmationModal
+                isOpen={showRegenerateConfirm}
+                onClose={() => setShowRegenerateConfirm(false)}
+                onConfirm={confirmRegenerate}
+                title="Regenerate Invite Code"
+                message="Are you sure? The old invite code will stop working immediately."
+                confirmText="Regenerate"
+                variant="warning"
+            />
+
+            <ConfirmationModal
+                isOpen={!!memberToUpdate}
+                onClose={() => setMemberToUpdate(null)}
+                onConfirm={confirmRoleChange}
+                title="Change Member Role"
+                message={`Are you sure you want to change this user's role to ${memberToUpdate?.role}?`}
+                confirmText="Change Role"
+                variant="warning"
+            />
+
+            <ConfirmationModal
+                isOpen={!!memberToRemove}
+                onClose={() => setMemberToRemove(null)}
+                onConfirm={confirmRemoveMember}
+                title="Remove Member"
+                message="Are you sure you want to remove this member from the organization? They will lose access immediately."
+                confirmText="Remove Member"
+                variant="danger"
+            />
         </div>
     );
 }

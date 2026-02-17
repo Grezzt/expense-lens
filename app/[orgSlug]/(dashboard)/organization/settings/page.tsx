@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import {
     updateOrganization,
-    deleteOrganization,
     getUserRole,
     getAllCategories,
     Category
 } from '@/lib/supabase';
+import { deleteOrganization } from '@/lib/organization-service'; // Import from service
 import { useRouter } from 'next/navigation';
 import {
     Settings,
@@ -20,6 +20,8 @@ import {
     Building,
     Check
 } from 'lucide-react';
+
+import ConfirmationModal from '@/components/ui/ConfirmationModal';
 
 export default function SettingsPage() {
     const { currentOrg, currentUser, setCurrentOrg } = useAppStore();
@@ -38,6 +40,10 @@ export default function SettingsPage() {
     const [systemCategories, setSystemCategories] = useState<Category[]>([]);
     const [customCategories, setCustomCategories] = useState<string[]>([]);
     const [newCategory, setNewCategory] = useState('');
+
+    // Confirmation States
+    const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
+    const [showDeleteOrgConfirm, setShowDeleteOrgConfirm] = useState(false);
 
     // Load Data
     useEffect(() => {
@@ -125,10 +131,14 @@ export default function SettingsPage() {
         }
     };
 
-    const handleDeleteCategory = async (catToDelete: string) => {
-        if (!currentOrg || !confirm(`Remove category "${catToDelete}"?`)) return;
+    const onDeleteCategoryClick = (catToDelete: string) => {
+        setCategoryToDelete(catToDelete);
+    };
 
-        const updatedCategories = customCategories.filter(c => c !== catToDelete);
+    const confirmDeleteCategory = async () => {
+        if (!currentOrg || !categoryToDelete) return;
+
+        const updatedCategories = customCategories.filter(c => c !== categoryToDelete);
 
         try {
              // Optimistic Update
@@ -149,19 +159,18 @@ export default function SettingsPage() {
         }
     };
 
-    const handleDeleteOrg = async () => {
+    const onDeleteOrgClick = () => {
+        setShowDeleteOrgConfirm(true);
+    };
+
+    const confirmDeleteOrg = async () => {
         if (!currentOrg || !currentUser) return;
 
-        const confirmName = prompt(`To confirm deletion, please type "${currentOrg.name}":`);
-        if (confirmName !== currentOrg.name) {
-            alert('Incorrect organization name. Deletion cancelled.');
-            return;
-        }
-
-        if(!confirm('WARNING: This action cannot be undone. All data will be lost. Are you absolute sure?')) return;
-
         try {
-            await deleteOrganization(currentOrg.id);
+            // Pass userId to deleteOrganization from service
+            const result = await deleteOrganization(currentOrg.id, currentUser.id);
+            if (!result.success) throw new Error(result.error);
+
             router.push('/organizations');
             window.location.reload(); // Force refresh to clear store
         } catch (error) {
@@ -310,7 +319,7 @@ export default function SettingsPage() {
                                     <div key={cat} className="flex justify-between items-center group p-3 bg-gray-50 rounded-lg border border-transparent hover:border-gray-200 transition-all">
                                         <span className="font-medium text-gray-700">{cat}</span>
                                         <button
-                                            onClick={() => handleDeleteCategory(cat)}
+                                            onClick={() => onDeleteCategoryClick(cat)}
                                             className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -361,7 +370,7 @@ export default function SettingsPage() {
 
                         <div className="flex justify-end">
                             <button
-                                onClick={handleDeleteOrg}
+                                onClick={onDeleteOrgClick}
                                 className="bg-red-600 text-white hover:bg-red-700 px-6 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 transition-all shadow-lg shadow-red-500/20"
                             >
                                 <Trash2 className="w-4 h-4" />
@@ -372,6 +381,28 @@ export default function SettingsPage() {
                 )}
 
             </div>
+
+             {/* Confirmation Modals */}
+             <ConfirmationModal
+                isOpen={!!categoryToDelete}
+                onClose={() => setCategoryToDelete(null)}
+                onConfirm={confirmDeleteCategory}
+                title="Delete Category"
+                message={`Are you sure you want to delete the category "${categoryToDelete}"? This will not remove expenses already tagged with this category, but will prevent new uses.`}
+                confirmText="Delete"
+                variant="danger"
+            />
+
+            <ConfirmationModal
+                isOpen={showDeleteOrgConfirm}
+                onClose={() => setShowDeleteOrgConfirm(false)}
+                onConfirm={confirmDeleteOrg}
+                title="Delete Organization"
+                message="Are you ABSOLUTELY sure? This action cannot be undone. This will permanently delete your organization and all related data."
+                confirmText="Delete Organization"
+                variant="danger"
+                validationString={currentOrg?.name}
+            />
         </div>
     );
 }
