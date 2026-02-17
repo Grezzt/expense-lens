@@ -38,7 +38,7 @@ interface Anomaly {
 }
 
 export default function DashboardPage() {
-  const { currentOrg, currentUser, setScanDrawerOpen } = useAppStore();
+  const { currentOrg, currentUser, userRole, setScanDrawerOpen } = useAppStore();
   const [dateFilter, setDateFilter] = useState<'today' | 'week' | 'month' | 'quarter'>('month');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -204,6 +204,7 @@ export default function DashboardPage() {
         onScanClick={handleScanClick}
         onDateFilterChange={handleDateFilterChange}
         currentFilter={dateFilter}
+        userRole={userRole}
       />
 
       {/* KPI Cards */}

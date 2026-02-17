@@ -9,6 +9,7 @@ interface DashboardHeaderProps {
   onScanClick: () => void;
   onDateFilterChange: (filter: string) => void;
   currentFilter: string;
+  userRole?: string | null;
 }
 
 export default function DashboardHeader({
@@ -17,6 +18,7 @@ export default function DashboardHeader({
   onScanClick,
   onDateFilterChange,
   currentFilter,
+  userRole,
 }: DashboardHeaderProps) {
   const dateFilters = [
     { value: 'today', label: 'Hari ini' },
@@ -55,14 +57,16 @@ export default function DashboardHeader({
           <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
 
-        {/* Scan Receipt CTA */}
-        <button
-          onClick={onScanClick}
-          className="bg-primary hover:bg-primary-600 text-white flex items-center justify-center gap-2 px-6 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all text-sm"
-        >
-          <Camera className="w-4 h-4" />
-          Scan Receipt Now
-        </button>
+        {/* Scan Receipt CTA - Hidden for Viewers */}
+        {userRole !== 'viewer' && (
+          <button
+            onClick={onScanClick}
+            className="bg-primary hover:bg-primary-600 text-white flex items-center justify-center gap-2 px-6 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all text-sm"
+          >
+            <Camera className="w-4 h-4" />
+            Scan Receipt Now
+          </button>
+        )}
       </div>
     </div>
   );

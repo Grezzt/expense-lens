@@ -8,7 +8,7 @@ import ExpenseDetailDrawer from '@/components/expenses/ExpenseDetailDrawer';
 import { Plus, Filter, Search, ChevronDown, X } from 'lucide-react';
 
 export default function MyExpensesPage() {
-  const { currentOrg, setScanDrawerOpen } = useAppStore();
+  const { currentOrg, userRole, setScanDrawerOpen } = useAppStore();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -127,6 +127,7 @@ export default function MyExpensesPage() {
            </div>
 
            <div className="flex items-center gap-3">
+               {userRole !== 'viewer' && (
                <button
                 onClick={handleCreateNew}
                 className="btn btn-secondary shadow-lg shadow-[#bfd852]/20 flex items-center gap-2"
@@ -134,6 +135,7 @@ export default function MyExpensesPage() {
                    <Plus className="w-5 h-5" />
                    New Expense
                </button>
+               )}
            </div>
        </div>
 
@@ -360,7 +362,7 @@ export default function MyExpensesPage() {
             setSelectedExpense(exp);
             setIsDrawerOpen(true);
         }}
-        onDelete={handleDelete}
+        onDelete={userRole !== 'viewer' ? handleDelete : undefined}
        />
 
        {/* Detail Drawer */}

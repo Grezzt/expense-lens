@@ -28,6 +28,8 @@ export interface Organization {
   created_by: string;
   created_at: string;
   updated_at: string;
+  invite_code?: string;
+  invite_expires_at?: string;
 }
 
 export interface OrganizationMember {
@@ -271,6 +273,7 @@ export async function getUserOrganizations(userId: string) {
         slug,
         description,
         settings,
+        invite_code,
         created_by,
         created_at,
         updated_at

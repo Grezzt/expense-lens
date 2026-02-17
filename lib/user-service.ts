@@ -12,6 +12,7 @@ export interface Organization {
   name: string;
   slug: string;
   description?: string;
+  invite_code?: string;
 }
 
 export interface OrganizationMember {
@@ -55,7 +56,8 @@ export async function getUserOrganizations(userId: string): Promise<Organization
           id,
           name,
           slug,
-          description
+          description,
+          invite_code
         )
       `)
       .eq('user_id', userId);

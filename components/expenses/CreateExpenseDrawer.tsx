@@ -11,7 +11,7 @@ interface CreateExpenseDrawerProps {
   onClose: () => void;
 }
 
-type ScanStep = 'upload' | 'scanning' | 'verify' | 'success';
+type ScanStep = 'upload' | 'scanning' | 'verify' | 'success' | 'view-only';
 
 interface ExtractedData {
   merchant_name: string;
@@ -32,6 +32,18 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
   const [loading, setLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Role State
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  // Fetch role on mount or org change
+  useEffect(() => {
+    if (currentOrg && currentUser) {
+        import('@/lib/supabase').then(({ getUserRole }) => {
+            getUserRole(currentOrg.id, currentUser.id).then(role => setUserRole(role));
+        });
+    }
+  }, [currentOrg, currentUser]);
 
   // Data
   const [categories, setCategories] = useState<Category[]>([]);
@@ -96,12 +108,14 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
   // Reset state only on open if previously successful
   useEffect(() => {
     if (isOpen) {
-        if (step === 'success') {
+        if (userRole === 'viewer') {
+           setStep('view-only');
+        } else if (step === 'success' || step === 'view-only') {
             resetForm();
         }
         // Otherwise keep the state (persisting scanned data)
     }
-  }, [isOpen]);
+  }, [isOpen, userRole]);
 
   const handleFileSelect = (selectedFile: File) => {
     if (!selectedFile.type.startsWith('image/')) return;
@@ -163,17 +177,7 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
     }
   };
 
-  // Role State
-  const [userRole, setUserRole] = useState<string | null>(null);
 
-  // Fetch role on mount or org change
-  useEffect(() => {
-    if (currentOrg && currentUser) {
-        import('@/lib/supabase').then(({ getUserRole }) => {
-            getUserRole(currentOrg.id, currentUser.id).then(role => setUserRole(role));
-        });
-    }
-  }, [currentOrg, currentUser]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -264,6 +268,7 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
         </div>
 
         {/* Tabs (Segmented Control) */}
+        {step !== 'view-only' && (
         <div className="p-6 pb-0">
           <div className="flex bg-black/20 rounded-xl p-1 backdrop-blur-md">
             <button
@@ -290,9 +295,26 @@ export default function CreateExpenseDrawer({ isOpen, onClose }: CreateExpenseDr
             </button>
           </div>
         </div>
+        )}
 
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto p-6">
+
+          {/* VIEW ONLY MODE */}
+          {step === 'view-only' && (
+            <div className="flex flex-col items-center justify-center py-10 text-center animate-fade-in">
+                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                    <FileText className="w-8 h-8 text-white/20" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">View Only Mode</h3>
+                <p className="text-gray-400 max-w-xs mx-auto">
+                    You have <strong>Viewer</strong> access only. You cannot create new expenses or use AI scanning.
+                </p>
+                <div className="mt-8 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-yellow-200 text-sm">
+                    Contact your administrator to upgrade your role to Member or higher.
+                </div>
+            </div>
+          )}
 
           {/* SCAN TAB */}
           {activeTab === 'scan' && (
