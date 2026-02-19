@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate": "node scripts/migrate.js",
+    "migrate:dry": "node scripts/migrate.js --dry-run",
+    "db:reset": "node scripts/migrate.js --reset"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
@@ -26,6 +29,7 @@
     "langchain": "0.3.11",
     "lucide-react": "^0.263.1",
     "next": "14.1.0",
+    "pg": "^8.11.3",
     "postcss": "8.4.33",
     "react": "18.2.0",
     "react-dom": "18.2.0",

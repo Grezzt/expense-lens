@@ -1,0 +1,42 @@
+{
+"name": "expense-lens",
+"version": "1.0.0",
+"private": true,
+"scripts": {
+"dev": "next dev",
+"build": "next build",
+"start": "next start",
+"lint": "next lint",
+"migrate": "node scripts/migrate.js",
+"migrate:dry": "node scripts/migrate.js --dry-run",
+"db:reset": "node scripts/migrate.js --reset"
+},
+"dependencies": {
+"@google/generative-ai": "^0.21.0",
+"@gsap/react": "^2.1.2",
+"@langchain/core": "^0.3.80",
+"@langchain/google-genai": "^0.1.12",
+"@react-pdf/renderer": "3.1.15",
+"@supabase/supabase-js": "2.39.3",
+"@types/node": "^20.11.5",
+"@types/react": "18.2.48",
+"@types/react-dom": "18.2.18",
+"autoprefixer": "10.4.17",
+"eslint": "8.56.0",
+"eslint-config-next": "14.1.0",
+"exceljs": "4.4.0",
+"gsap": "^3.14.2",
+"langchain": "0.3.11",
+"lucide-react": "^0.263.1",
+"next": "14.1.0",
+"postcss": "8.4.33",
+"react": "18.2.0",
+"react-dom": "18.2.0",
+"react-icons": "^5.0.1",
+"recharts": "^2.10.3",
+"tailwindcss": "3.4.1",
+"typescript": "5.7.2",
+"zustand": "^5.0.11",
+"pg": "8.11.3"
+}
+}
