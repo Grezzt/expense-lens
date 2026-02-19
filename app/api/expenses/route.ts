@@ -35,6 +35,8 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
 
     const expense = await createExpense({
+      organization_id: data.organization_id,
+      created_by: data.created_by,
       image_url: data.image_url,
       merchant_name: data.merchant_name,
       amount: data.amount,
