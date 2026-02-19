@@ -51,10 +51,10 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* CTA */}
-          <Link href="/login" className="btn-el-accent text-xs py-2 px-4">
+          {/* CTA - Hidden on mobile header to prevent overflow */}
+          {/* <Link href="/login" className="btn-el-accent text-xs py-2 px-4">
             Get Started
-          </Link>
+          </Link> */}
 
           {/* Hamburger */}
           <button
@@ -93,7 +93,15 @@ export default function Navbar() {
               style={{ color: "var(--el-accent)" }}
               onClick={() => setMobileOpen(false)}
             >
-              Sign In →
+              Sign In
+            </Link>
+            <Link
+              href="/login"
+              className="text-2xl font-bold mt-2"
+              style={{ color: "var(--el-accent)" }}
+              onClick={() => setMobileOpen(false)}
+            >
+              Get Started →
             </Link>
           </nav>
         )}

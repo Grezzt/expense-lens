@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 52" width="220" height="52">
+  <!-- Transparent background variant for dark surfaces -->
+
+  <!-- "Expense" wordmark -->
+  <text
+    x="10"
+    y="34"
+    font-family="DM Sans, Inter, sans-serif"
+    font-size="24"
+    font-weight="700"
+    letter-spacing="-0.5"
+    fill="#022c22"
+  >Expense</text>
+
+  <!-- "Lens" accent badge -->
+  <rect x="130" y="11" width="64" height="30" rx="4" fill="#bfd852"/>
+  <text
+    x="144"
+    y="32"
+    font-family="DM Sans, Inter, sans-serif"
+    font-size="16"
+    font-weight="900"
+    letter-spacing="2"
+    fill="#022c22"
+  >LENS</text>
+</svg>

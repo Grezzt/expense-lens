@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Lens Logo</title>
+    <style>
+      :root {
+        --el-primary: #022c22;
+        --el-accent: #bfd852;
+        --el-white: #ffffff;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: var(--el-primary);
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem; /* gap-2 */
+        padding: 2rem;
+      }
+      .text-part {
+        font-size: 1.5rem; /* text-2xl */
+        line-height: 2rem;
+        font-weight: 700; /* font-bold */
+        letter-spacing: -0.025em; /* tracking-tight */
+        color: var(--el-white);
+      }
+      .badge-part {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.125rem 0.375rem; /* px-1.5 py-0.5 */
+        font-size: 0.75rem; /* text-xs */
+        line-height: 1rem;
+        font-weight: 900; /* font-black */
+        letter-spacing: 0.1em; /* tracking-widest */
+        text-transform: uppercase;
+        background-color: var(--el-accent);
+        color: var(--el-primary);
+        border-radius: 0.25rem; /* slightly rounded for badge look */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo-container">
+      <span class="text-part">Expense</span>
+      <span class="badge-part">Lens</span>
+    </div>
+  </body>
+</html>
