@@ -113,16 +113,16 @@ export default function Hero() {
 
       {/* Content */}
       <div
-        className="relative z-10 mx-auto px-5 lg:px-14 py-14 flex flex-col lg:flex-row items-end gap-8"
-        style={{ maxWidth: 1300 }}
+        className="relative z-10 mx-auto px-5 lg:px-14 py-14 flex flex-col lg:flex-row items-stretch gap-0"
+        style={{ maxWidth: 1400 }}
       >
         {/* Left: Bordered text box */}
         <div
           className="hero-text-box flex-1 flex flex-col justify-between"
           style={{
             border: "1px solid rgba(191,216,82,0.3)",
-            padding: 30,
-            minHeight: 380,
+            padding: "40px 36px",
+            minHeight: 480,
             backgroundColor: "var(--el-primary)",
           }}
         >
@@ -157,19 +157,18 @@ export default function Hero() {
           </div>
 
           {/* Bottom of text box: subheading + CTAs */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-end gap-6">
+          <div className="flex flex-col gap-6">
             <p
-              className="hero-sub flex-1"
+              className="hero-sub"
               style={{
-                fontSize: "clamp(16px, 1.8vw, 20px)",
+                fontSize: "clamp(16px, 1.6vw, 19px)",
                 color: "var(--el-white)",
                 opacity: 0.85,
-                lineHeight: 1.4,
-                maxWidth: 420,
+                lineHeight: 1.6,
+                maxWidth: 500,
               }}
             >
-              Stop flying blind — scan receipts, auto-categorize expenses, and get
-              data-backed insights to grow with confidence.
+              Stop flying blind — scan receipts, auto-categorize expenses, and get data-backed insights to grow with confidence.
             </p>
 
             <div className="hero-btn flex gap-3 flex-wrap">
@@ -185,16 +184,25 @@ export default function Hero() {
 
         {/* Right: Hero illustration */}
         <div
-          className="hero-visual flex-1 flex items-center justify-center"
-          style={{ minHeight: 360 }}
+          className="hero-visual relative overflow-hidden"
+          style={{
+            flex: "0 0 52%",
+            minHeight: 520,
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+          }}
         >
           <img
             src="/hero.png"
             alt="ExpenseLens Dashboard Preview"
-            className="w-full h-auto object-contain"
             style={{
-              maxWidth: 580,
-              filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.35))",
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "top center",
+              filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.4))",
+              display: "block",
             }}
           />
         </div>
