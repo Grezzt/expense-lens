@@ -25,57 +25,126 @@ export default function AnomalyWatchlist({ anomalies, onReview }: AnomalyWatchli
     }).format(amount);
   };
 
-  const getSeverityColor = (severity: AnomalyItem['severity']) => {
-    const colors = {
-      high: 'text-red-600 bg-red-50 border-red-200',
-      medium: 'text-yellow-600 bg-yellow-50 border-yellow-200',
-      low: 'text-blue-600 bg-blue-50 border-blue-200',
-    };
-    return colors[severity];
-  };
-
   return (
-    <div className="card p-6 shadow-sm">
-      <div className="flex items-center gap-2 mb-4">
-        <AlertTriangle className="w-5 h-5 text-error" />
-        <h3 className="text-lg font-semibold text-white">
-          Flagged by AI
-        </h3>
+    <div
+      style={{
+        backgroundColor: 'var(--el-primary)',
+        border: '1.5px solid var(--el-primary)',
+        position: 'relative',
+        height: '100%',
+      }}
+    >
+      {/* Top accent bar */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          backgroundColor: 'var(--el-accent)',
+        }}
+      />
+
+      {/* Header */}
+      <div
+        className="px-6 pt-7 pb-4 flex items-center gap-3"
+        style={{ borderBottom: '1px solid rgba(191,216,82,0.15)' }}
+      >
+        <AlertTriangle
+          className="w-4 h-4 flex-shrink-0"
+          style={{ color: 'var(--el-accent)' }}
+        />
+        <div>
+          <p
+            style={{
+              color: 'var(--el-accent)',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              letterSpacing: '1.5px',
+              fontSize: 11,
+            }}
+          >
+            AI Watchlist
+          </p>
+          <h3
+            className="font-bold mt-0.5"
+            style={{ color: 'var(--el-white)', fontSize: 18, letterSpacing: '-0.01em' }}
+          >
+            Flagged by AI
+          </h3>
+        </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="px-5 py-4 space-y-3">
         {anomalies.length === 0 ? (
-          <div className="text-center py-8">
-            <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-2">
-              <CheckCircle className="w-6 h-6 text-green-400" />
+          <div className="text-center py-10">
+            <div
+              className="w-12 h-12 flex items-center justify-center mx-auto mb-3"
+              style={{ backgroundColor: 'rgba(191,216,82,0.15)' }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
+                <path
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  stroke="var(--el-accent)"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </div>
-            <p className="text-sm text-gray-300">No anomalies detected</p>
-            <p className="text-xs text-gray-400 mt-1">All transactions look normal</p>
+            <p
+              className="text-sm font-semibold"
+              style={{ color: 'var(--el-white)' }}
+            >
+              No anomalies detected
+            </p>
+            <p
+              className="text-xs mt-1"
+              style={{ color: 'rgba(255,255,255,0.4)' }}
+            >
+              All transactions look normal
+            </p>
           </div>
         ) : (
           anomalies.map((anomaly) => (
             <div
               key={anomaly.id}
-              className="p-4 rounded-lg bg-error/10 border border-error/20"
+              className="p-4"
+              style={{
+                backgroundColor: 'rgba(191,216,82,0.06)',
+                border: '1px solid rgba(191,216,82,0.15)',
+              }}
             >
               <div className="flex items-start justify-between gap-3">
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <AlertTriangle className="w-4 h-4 text-red-400" />
-                    <h4 className="font-semibold text-sm text-error">{anomaly.type}</h4>
+                    <AlertTriangle
+                      className="w-3.5 h-3.5 flex-shrink-0"
+                      style={{ color: 'var(--el-accent)' }}
+                    />
+                    <h4
+                      className="font-bold text-sm truncate"
+                      style={{ color: 'var(--el-accent)' }}
+                    >
+                      {anomaly.type}
+                    </h4>
                   </div>
-                  <p className="text-sm text-gray-300 mb-1">
-                    <span className="font-medium">{anomaly.merchant}</span>
-                    {' - '}
-                    <span className="font-semibold">{formatCurrency(anomaly.amount)}</span>
+                  <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                    <span className="font-semibold">{anomaly.merchant}</span>
+                    {' — '}
+                    <span style={{ color: 'var(--el-accent)', fontWeight: 700 }}>
+                      {formatCurrency(anomaly.amount)}
+                    </span>
                   </p>
-                  <p className="text-xs text-gray-400">
-                    Rule: {anomaly.rule}
+                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                    {anomaly.rule}
                   </p>
                 </div>
                 <button
                   onClick={() => onReview(anomaly.id)}
-                  className="bg-secondary hover:bg-secondary/90 text-gray-900 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 flex-shrink-0 transition-colors"
+                  className="btn-el-accent flex items-center gap-1 flex-shrink-0"
+                  style={{ fontSize: 11, padding: '6px 14px' }}
                 >
                   <Eye className="w-3 h-3" />
                   Review
@@ -86,23 +155,5 @@ export default function AnomalyWatchlist({ anomalies, onReview }: AnomalyWatchli
         )}
       </div>
     </div>
-  );
-}
-
-function CheckCircle({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
   );
 }

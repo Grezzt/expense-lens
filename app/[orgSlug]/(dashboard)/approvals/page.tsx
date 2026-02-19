@@ -101,36 +101,35 @@ export default function ApprovalsPage() {
       }
   };
 
-  if (loading) {
-      return <div className="p-8 text-white">Loading approvals...</div>;
-  }
-
   return (
-    <div className="container mx-auto px-6 py-8 max-w-7xl h-full flex flex-col">
+    <div className="mx-auto px-6 py-10" style={{ maxWidth: 1400 }}>
        {/* Header */}
-       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8 pb-6" style={{ borderBottom: '1px solid rgba(2,44,34,0.1)' }}>
            <div>
-               <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
-                   <Inbox className="w-8 h-8" />
-                   Review & Approvals
+               <p className="el-callout-text mb-2">Needs Attention</p>
+               <h1 className="font-bold flex items-center gap-3" style={{ fontSize: 'clamp(24px, 3vw, 36px)', color: 'var(--el-primary)', lineHeight: 1.1 }}>
+                   <Inbox className="w-8 h-8" style={{ color: 'var(--el-accent)' }} />
+                   Approvals
                </h1>
-               <p className="text-foreground-muted mt-1">
-                   {expenses.length} expenses waiting for your approval
+               <p className="mt-2 text-sm" style={{ color: 'var(--el-primary)', opacity: 0.6 }}>
+                   {expenses.length > 0 ? `${expenses.length} expenses waiting for your review` : 'No pending approvals'}
                </p>
            </div>
        </div>
 
        {/* List or Empty State */}
-       <ApprovalList
-        expenses={expenses}
-        isLoading={loading}
-        onView={(exp) => {
-            setSelectedExpense(exp);
-            setIsDrawerOpen(true);
-        }}
-        onApprove={handleApprove}
-        onReject={handleReject}
-       />
+       <div className="animate-fade-in">
+           <ApprovalList
+            expenses={expenses}
+            isLoading={loading}
+            onView={(exp) => {
+                setSelectedExpense(exp);
+                setIsDrawerOpen(true);
+            }}
+            onApprove={handleApprove}
+            onReject={handleReject}
+           />
+       </div>
 
        {/* Detail Drawer (Read-Only or Edit if needed) */}
        <ExpenseDetailDrawer

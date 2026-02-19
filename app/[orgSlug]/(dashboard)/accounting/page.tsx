@@ -108,61 +108,92 @@ export default function AccountingPage() {
     };
 
     return (
-        <div className="container mx-auto px-6 py-8 max-w-7xl h-full flex flex-col">
+        <div className="mx-auto px-6 py-10" style={{ maxWidth: 1400 }}>
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8 pb-6" style={{ borderBottom: '1px solid rgba(2,44,34,0.1)' }}>
                 <div>
-                    <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
-                        <FileSpreadsheet className="w-8 h-8" />
+                     <p className="el-callout-text mb-2">Finance & Export</p>
+                    <h1 className="font-bold flex items-center gap-3" style={{ fontSize: 'clamp(24px, 3vw, 36px)', color: 'var(--el-primary)', lineHeight: 1.1 }}>
+                        <FileSpreadsheet className="w-8 h-8" style={{ color: 'var(--el-accent)' }} />
                         Accounting Export
                     </h1>
-                    <p className="text-foreground-muted mt-1">
+                    <p className="mt-2 text-sm" style={{ color: 'var(--el-primary)', opacity: 0.6 }}>
                         Download transaction reports for external accounting software
                     </p>
                 </div>
             </div>
 
             {/* Filter Panel */}
-            <div className="bg-white p-6 rounded-2xl border border-border shadow-sm mb-8 animate-fade-in">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+            <div
+                className="p-6 mb-8"
+                style={{
+                    backgroundColor: 'var(--el-white)',
+                    border: '1.5px solid var(--el-primary)',
+                    position: 'relative'
+                }}
+            >
+                {/* Top Accent */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, backgroundColor: 'var(--el-accent)' }} />
 
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                     {/* Start Date */}
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700 block">Start Date</label>
+                        <label className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--el-primary)', opacity: 0.7, fontSize: 11 }}>Start Date</label>
                         <div className="relative">
-                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'var(--el-accent)' }} />
                             <input
                                 type="date"
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                                className="w-full pl-10 pr-4 py-2.5 text-sm font-medium"
+                                style={{
+                                    backgroundColor: 'rgba(2,44,34,0.03)',
+                                    border: '1px solid rgba(2,44,34,0.1)',
+                                    color: 'var(--el-primary)',
+                                    outline: 'none',
+                                    borderRadius: 0
+                                }}
                             />
                         </div>
                     </div>
 
                     {/* End Date */}
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700 block">End Date</label>
+                        <label className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--el-primary)', opacity: 0.7, fontSize: 11 }}>End Date</label>
                          <div className="relative">
-                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'var(--el-accent)' }} />
                             <input
                                 type="date"
                                 value={endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                                className="w-full pl-10 pr-4 py-2.5 text-sm font-medium"
+                                style={{
+                                    backgroundColor: 'rgba(2,44,34,0.03)',
+                                    border: '1px solid rgba(2,44,34,0.1)',
+                                    color: 'var(--el-primary)',
+                                    outline: 'none',
+                                    borderRadius: 0
+                                }}
                             />
                         </div>
                     </div>
 
                     {/* Status Filter */}
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700 block">Status</label>
+                        <label className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--el-primary)', opacity: 0.7, fontSize: 11 }}>Status</label>
                         <div className="relative">
-                            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'var(--el-accent)' }} />
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value as any)}
-                                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all appearance-none cursor-pointer"
+                                className="w-full pl-10 pr-4 py-2.5 text-sm font-medium appearance-none cursor-pointer"
+                                style={{
+                                    backgroundColor: 'rgba(2,44,34,0.03)',
+                                    border: '1px solid rgba(2,44,34,0.1)',
+                                    color: 'var(--el-primary)',
+                                    outline: 'none',
+                                    borderRadius: 0
+                                }}
                             >
                                 <option value="VERIFIED">Verified Only (Recommended)</option>
                                 <option value="ALL">All Transactions</option>
@@ -175,11 +206,12 @@ export default function AccountingPage() {
                     <button
                         onClick={handleExport}
                         disabled={loading || expenses.length === 0 || exporting}
-                        className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold text-[#022c22] transition-all shadow-lg shadow-[#bfd852]/20 ${
+                        className={`flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold transition-all ${
                             expenses.length > 0
-                            ? 'bg-[#bfd852] hover:bg-[#d0ea62] hover:scale-105'
+                            ? 'btn-el-accent'
                             : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                         }`}
+                        style={expenses.length > 0 ? {} : { borderRadius: 0 }}
                     >
                         {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
                         {exporting ? 'Generating Excel...' : 'Export to Excel'}
@@ -188,74 +220,95 @@ export default function AccountingPage() {
             </div>
 
             {/* Preview Section */}
-            <div className="flex-1 bg-white rounded-2xl border border-border shadow-sm flex flex-col overflow-hidden animate-fade-in animation-delay-100">
-                <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                    <h2 className="text-lg font-bold text-primary flex items-center gap-2">
+            <div
+                className="flex-1 flex flex-col overflow-hidden"
+                style={{
+                    backgroundColor: 'var(--el-white)',
+                    border: '1.5px solid var(--el-primary)',
+                }}
+            >
+                <div className="p-6 border-b flex justify-between items-center" style={{ borderBottom: '1px solid rgba(2,44,34,0.1)', backgroundColor: 'rgba(2,44,34,0.02)' }}>
+                    <h2 className="text-lg font-bold flex items-center gap-2" style={{ color: 'var(--el-primary)' }}>
                         Preview Data
-                        <span className="text-xs font-normal text-gray-500 bg-white px-2 py-1 rounded-full border border-gray-200">
-                            {expenses.length} records found
+                        <span className="text-xs font-bold px-2 py-0.5" style={{ backgroundColor: 'var(--el-accent)', color: 'var(--el-primary)' }}>
+                            {expenses.length} records
                         </span>
                     </h2>
                     {expenses.length > 1000 && (
-                        <div className="flex items-center gap-2 text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg text-xs font-medium">
+                        <div className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium" style={{ backgroundColor: '#fff7ed', color: '#c2410c', border: '1px solid #fed7aa' }}>
                             <AlertCircle className="w-4 h-4" />
-                            Only previewing first 50 - Full export contains all data
+                            Preview limited to first 50
                         </div>
                     )}
                 </div>
 
                 <div className="flex-1 overflow-x-auto">
                      {loading ? (
-                        <div className="h-64 flex flex-col items-center justify-center text-gray-400 animate-pulse">
-                            <Loader2 className="w-8 h-8 animate-spin mb-2" />
-                            Loading preview...
+                        <div className="h-64 flex flex-col items-center justify-center">
+                            <Loader2 className="w-8 h-8 animate-spin mb-2" style={{ color: 'var(--el-accent)' }} />
+                            <p style={{ color: 'var(--el-primary)', fontSize: 13, fontWeight: 500 }}>Loading preview...</p>
                         </div>
                     ) : expenses.length === 0 ? (
-                        <div className="h-64 flex flex-col items-center justify-center text-gray-400">
-                             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                                <FileSpreadsheet className="w-8 h-8 text-gray-300" />
+                        <div className="h-64 flex flex-col items-center justify-center text-center p-6">
+                             <div className="w-16 h-16 flex items-center justify-center mb-4" style={{ backgroundColor: 'rgba(2,44,34,0.03)' }}>
+                                <FileSpreadsheet className="w-8 h-8" style={{ color: 'var(--el-primary)', opacity: 0.3 }} />
                              </div>
-                             No transactions found for this period.
+                             <p className="font-bold mb-1" style={{ color: 'var(--el-primary)' }}>No transactions found</p>
+                             <p className="text-sm" style={{ color: 'var(--el-primary)', opacity: 0.5 }}>Try adjusting your filters.</p>
                         </div>
                     ) : (
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-gray-50 text-gray-600 border-b border-gray-200">
+                            <thead>
                                 <tr>
-                                    <th className="px-6 py-4 font-semibold">Date</th>
-                                    <th className="px-6 py-4 font-semibold">Merchant</th>
-                                    <th className="px-6 py-4 font-semibold">Category</th>
-                                    <th className="px-6 py-4 font-semibold text-right">Amount</th>
-                                    <th className="px-6 py-4 font-semibold text-center">Status</th>
-                                    <th className="px-6 py-4 font-semibold">Description</th>
+                                    {['Date', 'Merchant', 'Category', 'Amount', 'Status', 'Description'].map((h, i) => (
+                                        <th
+                                            key={h}
+                                            className="px-6 py-4 el-callout-text"
+                                            style={{
+                                                fontSize: 10,
+                                                letterSpacing: '1.5px',
+                                                borderBottom: '1px solid rgba(2,44,34,0.1)',
+                                                textAlign: i === 3 ? 'right' : i === 4 ? 'center' : 'left'
+                                            }}
+                                        >
+                                            {h}
+                                        </th>
+                                    ))}
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody>
                                 {expenses.slice(0, 50).map((expense) => (
-                                    <tr key={expense.id} className="hover:bg-gray-50/50 transition-colors">
-                                        <td className="px-6 py-4 text-gray-900 font-medium">
+                                    <tr
+                                        key={expense.id}
+                                        className="transition-colors"
+                                        style={{ borderBottom: '1px solid rgba(2,44,34,0.05)' }}
+                                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(191,216,82,0.05)'}
+                                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'}
+                                    >
+                                        <td className="px-6 py-4 font-semibold" style={{ color: 'var(--el-primary)' }}>
                                             {new Date(expense.date).toLocaleDateString('en-GB')}
                                         </td>
-                                        <td className="px-6 py-4 text-gray-600">{expense.merchant_name}</td>
+                                        <td className="px-6 py-4" style={{ color: 'var(--el-primary)' }}>{expense.merchant_name}</td>
                                         <td className="px-6 py-4">
-                                            <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-full text-xs font-medium border border-gray-200">
+                                            <span className="px-2 py-0.5 text-xs font-medium border" style={{ backgroundColor: 'rgba(2,44,34,0.03)', borderColor: 'rgba(2,44,34,0.1)', color: 'var(--el-primary)' }}>
                                                 {expense.category}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right font-medium text-gray-900">
+                                        <td className="px-6 py-4 text-right font-bold" style={{ color: 'var(--el-primary)' }}>
                                             Rp {expense.amount.toLocaleString('id-ID')}
                                         </td>
                                         <td className="px-6 py-4 text-center">
                                             {expense.status === 'VERIFIED' ? (
-                                                <span className="inline-flex items-center gap-1 text-green-700 bg-green-50 px-2 py-1 rounded-full text-xs font-medium">
-                                                    <CheckCircle2 className="w-3 h-3" /> Verified
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold" style={{ backgroundColor: 'rgba(191,216,82,0.2)', color: 'var(--el-primary)' }}>
+                                                    <CheckCircle2 className="w-3 h-3" /> VERIFIED
                                                 </span>
                                             ) : (
-                                                <span className="inline-flex items-center gap-1 text-gray-500 bg-gray-100 px-2 py-1 rounded-full text-xs font-medium">
-                                                    Draft
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold" style={{ backgroundColor: 'rgba(0,0,0,0.05)', color: '#666' }}>
+                                                    DRAFT
                                                 </span>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 text-gray-500 max-w-xs truncate" title={expense.description}>
+                                        <td className="px-6 py-4 max-w-xs truncate" style={{ color: 'var(--el-primary)', opacity: 0.6 }} title={expense.description}>
                                             {expense.description || '-'}
                                         </td>
                                     </tr>

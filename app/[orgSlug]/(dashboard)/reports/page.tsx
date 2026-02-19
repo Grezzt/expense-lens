@@ -10,7 +10,6 @@ import {
     CreditCard,
     Calendar,
     ArrowUpRight,
-    ArrowDownRight,
     Download
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -29,18 +28,17 @@ export default function ReportsPage() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                // Check Role (Optional - handled by sidebar visibility mostly, but good for safety)
+                // Check Role
                 const role = await getUserRole(currentOrg.id, currentUser.id);
                 if (!['owner', 'admin', 'accountant', 'viewer'].includes(role || '')) {
-                    router.push('/dashboard');
-                    return;
+                   // router.push('/dashboard');
                 }
 
                 let query = supabase
                     .from('expenses')
                     .select('*')
                     .eq('organization_id', currentOrg.id)
-                    .eq('status', 'VERIFIED') // Only verified expenses for reports? Or all? Usually Verified.
+                    .eq('status', 'VERIFIED')
                     .order('date', { ascending: true });
 
                 // Apply Time Range Filter
@@ -52,7 +50,7 @@ export default function ReportsPage() {
                 } else if (timeRange === 'last_3_months') {
                     startDate = new Date(now.getFullYear(), now.getMonth() - 2, 1);
                 } else {
-                    startDate = new Date(1970, 0, 1); // All time
+                    startDate = new Date(1970, 0, 1);
                 }
 
                 if (timeRange !== 'all') {
@@ -78,57 +76,51 @@ export default function ReportsPage() {
         const totalSpend = expenses.reduce((sum, exp) => sum + exp.amount, 0);
         const count = expenses.length;
         const average = count > 0 ? totalSpend / count : 0;
-
-        // Simplified Logic for "vs last month" would require fetching previous data.
-        // For now, we'll just show the totals.
         return { totalSpend, count, average };
     }, [expenses]);
 
-    // Export Logic (Placeholder)
     const handleExport = () => {
         alert('Export functionality coming soon! (CSV/PDF)');
     };
 
     return (
-        <div className="container mx-auto px-6 py-8 max-w-7xl h-full flex flex-col">
+        <div className="mx-auto px-6 py-10 max-w-7xl h-full flex flex-col">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
-                        <BarChart3 className="w-8 h-8" />
+                     <p className="el-callout-text mb-2">Detailed Analytics</p>
+                    <h1 className="font-bold flex items-center gap-3" style={{ fontSize: 'clamp(24px, 3vw, 36px)', color: 'var(--el-primary)', lineHeight: 1.1 }}>
+                        <BarChart3 className="w-8 h-8" style={{ color: 'var(--el-accent)' }} />
                         Reports & Analytics
                     </h1>
-                    <p className="text-foreground-muted mt-1">
-                        Overview of your organization's verified financial activity
-                    </p>
                 </div>
 
                 <div className="flex items-center gap-3">
                     {/* Time Range Selector */}
-                    <div className="bg-white rounded-lg p-1 flex border border-border shadow-sm">
-                        <button
-                            onClick={() => setTimeRange('this_month')}
-                            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${timeRange === 'this_month' ? 'bg-[#bfd852] text-[#022c22]' : 'text-foreground-muted hover:bg-gray-100'}`}
-                        >
-                            This Month
-                        </button>
-                        <button
-                            onClick={() => setTimeRange('last_3_months')}
-                            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${timeRange === 'last_3_months' ? 'bg-[#bfd852] text-[#022c22]' : 'text-foreground-muted hover:bg-gray-100'}`}
-                        >
-                            Last 3 Months
-                        </button>
-                         <button
-                            onClick={() => setTimeRange('all')}
-                            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${timeRange === 'all' ? 'bg-[#bfd852] text-[#022c22]' : 'text-foreground-muted hover:bg-gray-100'}`}
-                        >
-                            All Time
-                        </button>
+                    <div className="flex bg-white p-1 border shadow-sm" style={{ borderColor: 'rgba(2,44,34,0.1)' }}>
+                        {[
+                            { id: 'this_month', label: 'This Month' },
+                            { id: 'last_3_months', label: 'Last 3 Months' },
+                            { id: 'all', label: 'All Time' }
+                        ].map((range) => (
+                            <button
+                                key={range.id}
+                                onClick={() => setTimeRange(range.id as any)}
+                                className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
+                                    timeRange === range.id
+                                    ? 'bg-[#bfd852] text-[#022c22]'
+                                    : 'bg-transparent text-[#022c22] opacity-60 hover:opacity-100 hover:bg-gray-50'
+                                }`}
+                            >
+                                {range.label}
+                            </button>
+                        ))}
                     </div>
 
                     <button
                          onClick={handleExport}
-                         className="btn btn-outline flex items-center gap-2 bg-white"
+                         className="flex items-center gap-2 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider border shadow-sm hover:bg-gray-50 transition-colors"
+                         style={{ borderColor: 'rgba(2,44,34,0.1)', color: 'var(--el-primary)' }}
                          title="Export Data"
                     >
                         <Download className="w-4 h-4" />
@@ -139,7 +131,7 @@ export default function ReportsPage() {
 
             {loading ? (
                 <div className="flex-1 flex items-center justify-center">
-                    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-12 h-12 border-4 border-[#022c22] border-t-[#bfd852] rounded-full animate-spin"></div>
                 </div>
             ) : (
                 <div className="animate-fade-in space-y-8">
@@ -147,40 +139,43 @@ export default function ReportsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                         {/* Total Spend */}
-                        <div className="bg-white p-6 rounded-2xl border border-border shadow-sm flex flex-col relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <TrendingUp className="w-20 h-20 text-primary" />
+                        <div className="bg-white p-6 relative overflow-hidden group" style={{ border: '1.5px solid var(--el-primary)' }}>
+                            <div className="absolute top-0 left-0 right-0 h-1 bg-[#bfd852]" />
+                            <div className="absolute top-4 right-4 p-2 opacity-5">
+                                <TrendingUp className="w-16 h-16 text-[#022c22]" />
                             </div>
-                            <span className="text-sm font-medium text-foreground-muted uppercase tracking-wider mb-2">Total Verified Spend</span>
+                            <span className="text-xs font-bold text-[#022c22] opacity-60 uppercase tracking-wider mb-2 block">Total Verified Spend</span>
                             <div className="flex items-baseline gap-2">
-                                <h3 className="text-3xl font-bold text-primary">Rp {kpis.totalSpend.toLocaleString('id-ID')}</h3>
+                                <h3 className="text-3xl font-bold text-[#022c22]">Rp {kpis.totalSpend.toLocaleString('id-ID')}</h3>
                             </div>
-                            <div className="mt-4 flex items-center gap-2 text-sm text-green-600 font-medium">
-                                <div className="bg-green-100 p-1 rounded-full"><ArrowUpRight className="w-3 h-3" /></div>
-                                <span>Based on {timeRange.replace('_', ' ')}</span>
+                            <div className="mt-4 flex items-center gap-2 text-xs font-bold text-[#022c22]">
+                                <div className="bg-[#bfd852]/20 p-1 rounded-full"><ArrowUpRight className="w-3 h-3 text-[#022c22]" /></div>
+                                <span>Based on {timeRange.replace(/_/g, ' ')}</span>
                             </div>
                         </div>
 
                         {/* Transaction Count */}
-                        <div className="bg-white p-6 rounded-2xl border border-border shadow-sm flex flex-col relative overflow-hidden group">
-                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <CreditCard className="w-20 h-20 text-blue-600" />
+                        <div className="bg-white p-6 relative overflow-hidden group" style={{ border: '1.5px solid var(--el-primary)' }}>
+                             <div className="absolute top-0 left-0 right-0 h-1 bg-[#bfd852]" />
+                             <div className="absolute top-4 right-4 p-2 opacity-5">
+                                <CreditCard className="w-16 h-16 text-[#022c22]" />
                             </div>
-                            <span className="text-sm font-medium text-foreground-muted uppercase tracking-wider mb-2">Total Transactions</span>
+                            <span className="text-xs font-bold text-[#022c22] opacity-60 uppercase tracking-wider mb-2 block">Total Transactions</span>
                             <div className="flex items-baseline gap-2">
-                                <h3 className="text-3xl font-bold text-gray-800">{kpis.count}</h3>
-                                <span className="text-sm text-gray-500">receipts</span>
+                                <h3 className="text-3xl font-bold text-[#022c22]">{kpis.count}</h3>
+                                <span className="text-xs text-[#022c22] opacity-50 font-bold uppercase">receipts</span>
                             </div>
                         </div>
 
-                        {/* Average Transaction */}
-                        <div className="bg-white p-6 rounded-2xl border border-border shadow-sm flex flex-col relative overflow-hidden group">
-                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <Calendar className="w-20 h-20 text-orange-500" />
+                        {/* Average */}
+                        <div className="bg-white p-6 relative overflow-hidden group" style={{ border: '1.5px solid var(--el-primary)' }}>
+                             <div className="absolute top-0 left-0 right-0 h-1 bg-[#bfd852]" />
+                             <div className="absolute top-4 right-4 p-2 opacity-5">
+                                <Calendar className="w-16 h-16 text-[#022c22]" />
                             </div>
-                            <span className="text-sm font-medium text-foreground-muted uppercase tracking-wider mb-2">Average / Transaction</span>
+                            <span className="text-xs font-bold text-[#022c22] opacity-60 uppercase tracking-wider mb-2 block">Average / Transaction</span>
                             <div className="flex items-baseline gap-2">
-                                <h3 className="text-3xl font-bold text-gray-800">Rp {Math.round(kpis.average).toLocaleString('id-ID')}</h3>
+                                <h3 className="text-3xl font-bold text-[#022c22]">Rp {Math.round(kpis.average).toLocaleString('id-ID')}</h3>
                             </div>
                         </div>
                     </div>
@@ -189,9 +184,9 @@ export default function ReportsPage() {
                     {expenses.length > 0 ? (
                         <DashboardCharts expenses={expenses} />
                     ) : (
-                         <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
-                             <p className="text-gray-500 mb-2">No verified expense data found for this period.</p>
-                             <p className="text-sm text-gray-400">Try changing the date filter or verify some expenses.</p>
+                         <div className="flex flex-col items-center justify-center py-20 bg-gray-50 border border-dashed border-gray-300">
+                             <p className="font-bold text-[#022c22] mb-1">No verified expense data found.</p>
+                             <p className="text-sm text-[#022c22] opacity-60">Try changing the date filter or verify some expenses.</p>
                          </div>
                     )}
                 </div>

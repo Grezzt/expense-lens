@@ -2,13 +2,12 @@
 
 import {
   FileText,
-  Eye,
-  Trash2,
-  CheckCircle2,
-  AlertCircle,
   Clock,
   Calendar,
-  Tag
+  Tag,
+  Trash2,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import { Expense } from '@/lib/supabase';
 import { useState } from 'react';
@@ -28,7 +27,7 @@ export default function ExpenseList({ expenses, onView, onDelete, isLoading }: E
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="h-48 bg-white/5 animate-pulse rounded-2xl border border-white/5" />
+          <div key={i} className="h-48 bg-gray-100 animate-pulse border border-gray-200" />
         ))}
       </div>
     );
@@ -36,12 +35,12 @@ export default function ExpenseList({ expenses, onView, onDelete, isLoading }: E
 
   if (expenses.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center bg-black/20 rounded-2xl border border-white/5">
-        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
-          <FileText className="w-8 h-8 text-white/20" />
+      <div className="flex flex-col items-center justify-center py-20 text-center bg-white border border-dashed border-gray-300">
+        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+          <FileText className="w-8 h-8 text-gray-400" />
         </div>
-        <h3 className="text-lg font-semibold text-white mb-1">No expenses found</h3>
-        <p className="text-secondary/60 text-sm">Create your first expense to get started.</p>
+        <h3 className="text-lg font-bold text-gray-700 mb-1">No expenses found</h3>
+        <p className="text-gray-500 text-sm">Create your first expense to get started.</p>
       </div>
     );
   }
@@ -60,79 +59,87 @@ export default function ExpenseList({ expenses, onView, onDelete, isLoading }: E
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {expenses.map((expense) => (
-          <div
+           <div
               key={expense.id}
-              className="group bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 hover:border-[#bfd852]/50 hover:bg-black/60 transition-all duration-300 cursor-pointer flex flex-col gap-4 relative overflow-hidden"
+              className="group el-hover-card-wrapper"
               onClick={() => onView(expense)}
+              style={{ cursor: 'pointer' }}
           >
-              {/* Header: Merchant & Status & Actions */}
-              <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-3">
-                       <div className="w-12 h-12 rounded-xl overflow-hidden bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
-                          {expense.image_url ? (
-                              <img src={expense.image_url} alt="Receipt" className="w-full h-full object-cover" />
-                          ) : (
-                              <FileText className="w-6 h-6 text-white/50" />
-                          )}
-                       </div>
-                       <div>
-                           <h3 className="font-semibold text-white line-clamp-1 text-lg">{expense.merchant_name}</h3>
-                           <div className="flex items-center gap-2 text-xs text-white/60 mt-0.5">
-                               <Calendar className="w-3 h-3" />
-                               {new Date(expense.date).toLocaleDateString('en-GB', {
-                                  day: 'numeric',
-                                  month: 'short',
-                                  year: 'numeric'
-                                })}
+              <div className="el-hover-card relative flex flex-col h-full" style={{ padding: 20 }}>
+
+                  {/* Header */}
+                  <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-3">
+                           {/* Receipt Thumbnail or Icon */}
+                           <div className="w-12 h-12 rounded-none overflow-hidden flex items-center justify-center bg-gray-50 border border-gray-200">
+                              {expense.image_url ? (
+                                  <img src={expense.image_url} alt="Receipt" className="w-full h-full object-cover" />
+                              ) : (
+                                  <FileText className="w-6 h-6 text-gray-400" />
+                              )}
                            </div>
-                       </div>
-                  </div>
 
-                  {/* Actions & Status */}
-                  <div className="flex items-start gap-2">
-                       {/* Delete Button - Shows on Hover */}
-                       {onDelete && (
-                           <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button
-                                   onClick={(e) => handleDeleteClick(e, expense.id)}
-                                   className="p-1.5 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-colors border border-red-500/20"
-                                   title="Delete"
-                                >
-                                   <Trash2 className="w-4 h-4" />
-                                </button>
+                           <div>
+                               <h3 className="font-bold text-lg leading-tight line-clamp-1" style={{ color: 'var(--el-primary)' }}>{expense.merchant_name}</h3>
+                               <div className="flex items-center gap-2 text-xs font-medium mt-1" style={{ color: 'var(--el-primary)', opacity: 0.6 }}>
+                                   <Calendar className="w-3 h-3" />
+                                   {new Date(expense.date).toLocaleDateString('en-GB', {
+                                      day: 'numeric',
+                                      month: 'short',
+                                      year: 'numeric'
+                                    })}
+                               </div>
                            </div>
-                       )}
-                       <StatusBadge status={expense.status} />
-                  </div>
-              </div>
+                      </div>
 
-              {/* Description (if any) */}
-              {expense.description && (
-                  <p className="text-sm text-white/60 line-clamp-2 bg-white/5 p-2 rounded-lg italic">
-                      "{expense.description}"
-                  </p>
-              )}
-
-              {/* Footer: Category & Amount */}
-              <div className="mt-auto pt-3 border-t border-white/10 flex justify-between items-end">
-                  <div className="flex flex-col gap-1">
-                       <span className="text-xs text-white/40 uppercase tracking-wider font-semibold">Category</span>
-                       <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#bfd852]/10 text-[#bfd852] border border-[#bfd852]/20 w-fit">
-                          <Tag className="w-3 h-3" />
-                          {expense.category}
-                       </span>
+                      {/* Status Badge */}
+                      <StatusBadge status={expense.status} />
                   </div>
 
-                  <div className="text-right">
-                      <span className="text-xs text-white/40 uppercase tracking-wider font-semibold">Amount</span>
-                      <p className="text-xl font-bold text-white">
-                          Rp {expense.amount.toLocaleString('id-ID')}
+                  {/* Description */}
+                  {expense.description && (
+                      <p className="text-sm italic line-clamp-2 mb-4 flex-1" style={{ color: 'var(--el-primary)', opacity: 0.7 }}>
+                          "{expense.description}"
                       </p>
+                  )}
+                  {!expense.description && <div className="flex-1" />}
+
+                  {/* Footer */}
+                  <div className="mt-auto pt-4 border-t border-gray-100 flex justify-between items-end">
+                      <div className="flex flex-col gap-1">
+                           <span className="text-[10px] uppercase tracking-wider font-bold" style={{ color: 'var(--el-primary)', opacity: 0.4 }}>Category</span>
+                           <span className="flex items-center gap-1.5 px-2 py-0.5 text-xs font-bold w-fit" style={{ backgroundColor: '#f1f1f1', color: 'var(--el-primary)' }}>
+                              <Tag className="w-3 h-3" />
+                              {expense.category}
+                           </span>
+                      </div>
+
+                      <div className="flex flex-col items-end gap-2">
+                           {/* Delete Action (Hover) */}
+                           {onDelete && (
+                               <button
+                                   onClick={(e) => handleDeleteClick(e, expense.id)}
+                                   className="absolute top-4 right-4 p-2 text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
+                                   title="Delete"
+                               >
+                                   <Trash2 className="w-4 h-4" />
+                               </button>
+                           )}
+
+                           <div>
+                               <span className="text-[10px] uppercase tracking-wider font-bold block text-right mb-0.5" style={{ color: 'var(--el-primary)', opacity: 0.4 }}>Amount</span>
+                               <p className="text-lg font-black" style={{ color: 'var(--el-primary)' }}>
+                                   Rp {expense.amount.toLocaleString('id-ID')}
+                               </p>
+                           </div>
+                      </div>
                   </div>
               </div>
 
+              {/* Lime Shadow */}
+              <div className="el-hover-card-shadow" />
           </div>
         ))}
       </div>
@@ -154,20 +161,20 @@ function StatusBadge({ status }: { status: string }) {
     switch (status) {
         case 'VERIFIED':
             return (
-                <div className="rounded-full bg-[#bfd852] p-1" title="Verified">
-                     <CheckCircle2 className="w-4 h-4 text-[#022c22]" />
+                <div className="px-2 py-1 bg-[#bfd852]/20 text-[#022c22] text-[10px] font-bold uppercase tracking-wide flex items-center gap-1" title="Verified">
+                     <CheckCircle2 className="w-3 h-3" /> Verified
                 </div>
             );
         case 'FLAGGED':
             return (
-                <div className="rounded-full bg-red-500 p-1" title="Flagged">
-                    <AlertCircle className="w-4 h-4 text-white" />
+                <div className="px-2 py-1 bg-red-100 text-red-700 text-[10px] font-bold uppercase tracking-wide flex items-center gap-1" title="Flagged">
+                    <AlertCircle className="w-3 h-3" /> Flagged
                 </div>
             );
         default:
             return (
-                <div className="rounded-full bg-blue-500 p-1" title="Pending">
-                    <Clock className="w-4 h-4 text-white" />
+                <div className="px-2 py-1 bg-gray-100 text-gray-600 text-[10px] font-bold uppercase tracking-wide flex items-center gap-1" title="Pending">
+                    <Clock className="w-3 h-3" /> Draft
                 </div>
             );
     }

@@ -1,21 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef } from 'react';
 import { Camera } from 'lucide-react';
 import { usePermissions } from '@/hooks/usePermissions';
-import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/useAppStore';
 
 export default function SmartScanButton() {
   const { canAccessRoute } = usePermissions();
   const { setScanDrawerOpen } = useAppStore();
-  const [isHovered, setIsHovered] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // router is not needed for this action anymore, but might be needed for other things?
-  // keeping it if needed, or removing if unused.
-  // It was used for router.push.
-
-  // Only show for users who can create expenses
   if (!canAccessRoute(['owner', 'admin', 'accountant', 'member'])) {
     return null;
   }
@@ -26,15 +20,34 @@ export default function SmartScanButton() {
 
   return (
     <button
+      ref={buttonRef}
       onClick={handleClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="fixed bottom-6 right-6 z-30 flex items-center gap-3 bg-primary hover:bg-primary/90 text-white px-6 py-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+      className="fixed bottom-6 right-6 z-30 flex items-center gap-3 group"
+      style={{
+        backgroundColor: 'var(--el-accent)',
+        color: 'var(--el-primary)',
+        padding: '14px 22px',
+        fontWeight: 800,
+        fontSize: 13,
+        textTransform: 'uppercase',
+        letterSpacing: '1px',
+        border: 'none',
+        cursor: 'pointer',
+        boxShadow: '0 8px 32px rgba(191,216,82,0.35)',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+        position: 'fixed',
+      }}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
+        (e.currentTarget as HTMLElement).style.boxShadow = '0 14px 40px rgba(191,216,82,0.45)';
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+        (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 32px rgba(191,216,82,0.35)';
+      }}
     >
-      <Camera className="w-6 h-6" />
-      <span className={`font-semibold transition-all ${isHovered ? 'max-w-32' : 'max-w-0'} overflow-hidden whitespace-nowrap`}>
-        Scan Receipt
-      </span>
+      <Camera className="w-5 h-5 flex-shrink-0" />
+      <span>Scan Receipt</span>
     </button>
   );
 }

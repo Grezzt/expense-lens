@@ -1,5 +1,8 @@
 'use client';
 
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import { useState } from 'react';
 import OrgSwitcher from './OrgSwitcher';
 import NavItem from './NavItem';
@@ -10,7 +13,6 @@ import {
   BarChart3,
   FileSpreadsheet,
   Users,
-  Scale,
   Settings,
   Menu,
   X,
@@ -23,29 +25,73 @@ export default function Sidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const router = useRouter();
   const { currentUser, currentOrg, reset } = useAppStore();
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = () => {
     reset();
     router.push('/');
   };
 
+  useGSAP(
+    () => {
+      const items = gsap.utils.toArray<HTMLElement>('.sidebar-nav-group');
+      gsap.fromTo(
+        items,
+        { x: -16, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 0.5,
+          stagger: 0.07,
+          ease: 'power2.out',
+        }
+      );
+    },
+    { scope: sidebarRef }
+  );
+
   const sidebarContent = (
-    <div className="flex flex-col h-full">
-      {/* Logo */}
-      <div className="px-4 py-6">
-        <h1 className="text-2xl font-bold text-primary">ExpenseLens</h1>
-        <p className="text-xs text-foreground-muted mt-1">Smart Expense Management</p>
+    <div ref={sidebarRef} className="flex flex-col h-full" style={{ backgroundColor: 'var(--el-white)' }}>
+      {/* Logo — matching landing navbar style */}
+      <div
+        className="sidebar-nav-group flex items-center gap-2 px-5 py-5"
+        style={{
+          backgroundColor: 'var(--el-primary)',
+          borderBottom: '1px solid rgba(191,216,82,0.2)',
+        }}
+      >
+        <span
+          className="text-xl font-bold tracking-tight"
+          style={{ color: 'var(--el-white)' }}
+        >
+          Expense
+        </span>
+        <span
+          className="flex items-center px-1.5 py-0.5 text-xs font-black tracking-widest uppercase"
+          style={{
+            backgroundColor: 'var(--el-accent)',
+            color: 'var(--el-primary)',
+          }}
+        >
+          Lens
+        </span>
+        <span
+          className="ml-auto text-xs font-medium opacity-50"
+          style={{ color: 'var(--el-white)' }}
+        >
+          Dashboard
+        </span>
       </div>
 
       {/* Org Switcher */}
-      <div className="px-4 mb-6">
+      <div className="sidebar-nav-group px-4 py-4" style={{ borderBottom: '1px solid rgba(2,44,34,0.08)' }}>
         <OrgSwitcher />
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {/* Main Menu */}
-        <div className="mb-6">
+        <div className="sidebar-nav-group mb-5">
           <NavItem
             icon={LayoutDashboard}
             label="Dashboard"
@@ -61,8 +107,11 @@ export default function Sidebar() {
         </div>
 
         {/* Finance Office */}
-        <div className="mb-6">
-          <p className="text-xs font-semibold text-foreground-muted uppercase tracking-wide px-4 mb-2">
+        <div className="sidebar-nav-group mb-5">
+          <p
+            className="text-xs font-black uppercase tracking-widest px-3 mb-2"
+            style={{ color: 'var(--el-primary)', opacity: 0.45, letterSpacing: '1.5px' }}
+          >
             Finance Office
           </p>
           <NavItem
@@ -87,8 +136,11 @@ export default function Sidebar() {
         </div>
 
         {/* Organization */}
-        <div className="mb-6">
-          <p className="text-xs font-semibold text-foreground-muted uppercase tracking-wide px-4 mb-2">
+        <div className="sidebar-nav-group mb-5">
+          <p
+            className="text-xs font-black uppercase tracking-widest px-3 mb-2"
+            style={{ color: 'var(--el-primary)', opacity: 0.45, letterSpacing: '1.5px' }}
+          >
             Organization
           </p>
           <NavItem
@@ -97,7 +149,6 @@ export default function Sidebar() {
             route={`/${currentOrg?.slug || 'dash'}/organization/members`}
             visibleTo={['owner', 'admin']}
           />
-
           <NavItem
             icon={Settings}
             label="Settings"
@@ -108,25 +159,45 @@ export default function Sidebar() {
       </nav>
 
       {/* User Profile & Logout */}
-      <div className="px-4 py-4 border-t border-border">
+      <div
+        className="sidebar-nav-group px-4 py-4"
+        style={{ borderTop: '1px solid rgba(2,44,34,0.1)' }}
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
-              <span className="text-sm font-semibold text-foreground">
-                {currentUser?.full_name?.charAt(0) || 'U'}
-              </span>
+            <div
+              className="w-9 h-9 flex items-center justify-center text-sm font-bold"
+              style={{
+                backgroundColor: 'var(--el-accent)',
+                color: 'var(--el-primary)',
+              }}
+            >
+              {currentUser?.full_name?.charAt(0) || 'U'}
             </div>
             <div>
-              <p className="text-sm font-medium text-foreground">{currentUser?.full_name || 'User'}</p>
-              <p className="text-xs text-foreground-muted">{currentUser?.email}</p>
+              <p
+                className="text-sm font-semibold"
+                style={{ color: 'var(--el-primary)' }}
+              >
+                {currentUser?.full_name || 'User'}
+              </p>
+              <p
+                className="text-xs"
+                style={{ color: 'var(--el-primary)', opacity: 0.5 }}
+              >
+                {currentUser?.email}
+              </p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="p-2 hover:bg-card-hover rounded-lg transition-colors"
+            className="p-2 rounded-lg transition-colors"
+            style={{ color: 'var(--el-primary)' }}
             title="Logout"
+            onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(2,44,34,0.07)')}
+            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
           >
-            <LogOut className="w-4 h-4 text-foreground-muted" />
+            <LogOut className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -138,7 +209,12 @@ export default function Sidebar() {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-card border border-border rounded-lg shadow-lg"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 border rounded-lg shadow-lg"
+        style={{
+          backgroundColor: 'var(--el-white)',
+          borderColor: 'rgba(2,44,34,0.15)',
+          color: 'var(--el-primary)',
+        }}
       >
         {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
@@ -152,15 +228,25 @@ export default function Sidebar() {
       )}
 
       {/* Sidebar - Desktop */}
-      <aside className="hidden lg:flex w-64 bg-card border-r border-border flex-col">
+      <aside
+        className="hidden lg:flex w-64 flex-col"
+        style={{
+          backgroundColor: 'var(--el-white)',
+          borderRight: '1px solid rgba(2,44,34,0.1)',
+        }}
+      >
         {sidebarContent}
       </aside>
 
       {/* Sidebar - Mobile */}
       <aside
-        className={`lg:hidden fixed top-0 left-0 bottom-0 w-64 bg-card border-r border-border z-40 transform transition-transform ${
+        className={`lg:hidden fixed top-0 left-0 bottom-0 w-64 z-40 transform transition-transform ${
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
+        style={{
+          backgroundColor: 'var(--el-white)',
+          borderRight: '1px solid rgba(2,44,34,0.1)',
+        }}
       >
         {sidebarContent}
       </aside>

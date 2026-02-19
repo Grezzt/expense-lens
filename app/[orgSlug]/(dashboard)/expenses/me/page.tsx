@@ -113,24 +113,27 @@ export default function MyExpensesPage() {
     });
 
   return (
-    <div className="container mx-auto px-6 py-8 max-w-7xl h-full flex flex-col" onClick={() => {
+    <div className="mx-auto px-6 py-10" style={{ maxWidth: 1400 }} onClick={() => {
         // Close dropdowns when clicking outside
         setShowCategoryFilter(false);
         setShowStatusFilter(false);
         setShowDateFilter(false);
     }}>
        {/* Header */}
-       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8 pb-6" style={{ borderBottom: '1px solid rgba(2,44,34,0.1)' }}>
            <div>
-               <h1 className="text-3xl font-bold text-primary">My Expenses</h1>
-               <p className="text-foreground-muted mt-1">Manage and track your spending</p>
+               <p className="el-callout-text mb-2">My Wallet</p>
+               <h1 className="font-bold text-primary" style={{ fontSize: 'clamp(24px, 3vw, 36px)', color: 'var(--el-primary)', lineHeight: 1.1 }}>
+                   My Expenses
+               </h1>
+               <p className="mt-2 text-sm" style={{ color: 'var(--el-primary)', opacity: 0.6 }}>Manage and track your spending history</p>
            </div>
 
            <div className="flex items-center gap-3">
                {userRole !== 'viewer' && (
                <button
                 onClick={handleCreateNew}
-                className="btn btn-secondary shadow-lg shadow-[#bfd852]/20 flex items-center gap-2"
+                className="btn-el-accent flex items-center gap-2"
                >
                    <Plus className="w-5 h-5" />
                    New Expense
@@ -140,17 +143,18 @@ export default function MyExpensesPage() {
        </div>
 
        {/* Filters & Search Toolbar */}
-       <div className="mb-6 space-y-4">
+       <div className="mb-8 space-y-4">
 
            {/* Search Bar */}
-           <div className="flex items-center gap-4 bg-white p-4 rounded-xl border border-border shadow-sm">
-                <Search className="w-5 h-5 text-foreground-muted ml-2" />
+           <div className="flex items-center gap-4 bg-white p-4 rounded-none border shadow-sm" style={{ border: '1px solid rgba(2,44,34,0.1)' }}>
+                <Search className="w-5 h-5 ml-2" style={{ color: 'var(--el-primary)', opacity: 0.4 }} />
                 <input
                     type="text"
                     placeholder="Search expenses by merchant, category, or description..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 bg-transparent border-none focus:outline-none text-foreground placeholder-foreground-muted"
+                    className="flex-1 bg-transparent border-none focus:outline-none placeholder-gray-400 font-medium"
+                    style={{ color: 'var(--el-primary)' }}
                 />
            </div>
 
@@ -165,23 +169,24 @@ export default function MyExpensesPage() {
                             setShowStatusFilter(false);
                             setShowDateFilter(false);
                         }}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
+                        className={`flex items-center gap-2 px-4 py-2 text-sm font-bold uppercase tracking-wide transition-colors border ${
                             selectedCategory
                             ? 'bg-[#022c22] text-white border-[#022c22]'
-                            : 'bg-white text-foreground border-border hover:bg-gray-50'
+                            : 'bg-white text-[#022c22] border-gray-200 hover:bg-gray-50'
                         }`}
+                        style={{ borderRadius: 0 }}
                    >
                        <span>Type: {selectedCategory || 'All'}</span>
                        <ChevronDown className="w-4 h-4" />
                    </button>
 
                    {showCategoryFilter && (
-                       <div className="absolute top-full left-0 mt-2 w-56 bg-[#022c22] border border-white/10 rounded-xl shadow-xl z-20 overflow-hidden animate-scale-in">
+                       <div className="absolute top-full left-0 mt-2 w-56 bg-[#022c22] border border-white/10 shadow-xl z-20 overflow-hidden" style={{ borderRadius: 0 }}>
                            <div className="p-2 max-h-60 overflow-y-auto">
                                <button
                                    onClick={() => { setSelectedCategory(''); setShowCategoryFilter(false); }}
-                                   className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-1 transition-colors ${
-                                       selectedCategory === '' ? 'bg-[#bfd852] text-[#022c22] font-semibold' : 'text-white hover:bg-white/10'
+                                   className={`w-full text-left px-3 py-2 text-sm mb-1 transition-colors ${
+                                       selectedCategory === '' ? 'bg-[#bfd852] text-[#022c22] font-bold' : 'text-white hover:bg-white/10'
                                    }`}
                                >
                                    All Types
@@ -190,8 +195,8 @@ export default function MyExpensesPage() {
                                    <button
                                        key={cat.id}
                                        onClick={() => { setSelectedCategory(cat.name); setShowCategoryFilter(false); }}
-                                       className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-1 transition-colors ${
-                                           selectedCategory === cat.name ? 'bg-[#bfd852] text-[#022c22] font-semibold' : 'text-white hover:bg-white/10'
+                                       className={`w-full text-left px-3 py-2 text-sm mb-1 transition-colors ${
+                                           selectedCategory === cat.name ? 'bg-[#bfd852] text-[#022c22] font-bold' : 'text-white hover:bg-white/10'
                                        }`}
                                    >
                                        {cat.name}
@@ -210,39 +215,40 @@ export default function MyExpensesPage() {
                              setShowCategoryFilter(false);
                              setShowDateFilter(false);
                          }}
-                         className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
+                         className={`flex items-center gap-2 px-4 py-2 text-sm font-bold uppercase tracking-wide transition-colors border ${
                              selectedStatus
                              ? 'bg-[#022c22] text-white border-[#022c22]'
-                             : 'bg-white text-foreground border-border hover:bg-gray-50'
+                             : 'bg-white text-[#022c22] border-gray-200 hover:bg-gray-50'
                          }`}
+                         style={{ borderRadius: 0 }}
                     >
                         <span>Status: {selectedStatus ? (selectedStatus === 'VERIFIED' ? 'Verified' : 'Draft') : 'All'}</span>
                         <ChevronDown className="w-4 h-4" />
                     </button>
 
                     {showStatusFilter && (
-                        <div className="absolute top-full left-0 mt-2 w-48 bg-[#022c22] border border-white/10 rounded-xl shadow-xl z-20 overflow-hidden animate-scale-in">
+                        <div className="absolute top-full left-0 mt-2 w-48 bg-[#022c22] border border-white/10 shadow-xl z-20 overflow-hidden" style={{ borderRadius: 0 }}>
                             <div className="p-2">
                                 <button
                                     onClick={() => { setSelectedStatus(''); setShowStatusFilter(false); }}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-1 transition-colors ${
-                                        selectedStatus === '' ? 'bg-[#bfd852] text-[#022c22] font-semibold' : 'text-white hover:bg-white/10'
+                                    className={`w-full text-left px-3 py-2 text-sm mb-1 transition-colors ${
+                                        selectedStatus === '' ? 'bg-[#bfd852] text-[#022c22] font-bold' : 'text-white hover:bg-white/10'
                                     }`}
                                 >
                                     All Statuses
                                 </button>
                                 <button
                                     onClick={() => { setSelectedStatus('VERIFIED'); setShowStatusFilter(false); }}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-1 transition-colors ${
-                                        selectedStatus === 'VERIFIED' ? 'bg-[#bfd852] text-[#022c22] font-semibold' : 'text-white hover:bg-white/10'
+                                    className={`w-full text-left px-3 py-2 text-sm mb-1 transition-colors ${
+                                        selectedStatus === 'VERIFIED' ? 'bg-[#bfd852] text-[#022c22] font-bold' : 'text-white hover:bg-white/10'
                                     }`}
                                 >
                                     Verified
                                 </button>
                                 <button
                                     onClick={() => { setSelectedStatus('DRAFT'); setShowStatusFilter(false); }}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                                        selectedStatus === 'DRAFT' ? 'bg-[#bfd852] text-[#022c22] font-semibold' : 'text-white hover:bg-white/10'
+                                    className={`w-full text-left px-3 py-2 text-sm transition-colors ${
+                                        selectedStatus === 'DRAFT' ? 'bg-[#bfd852] text-[#022c22] font-bold' : 'text-white hover:bg-white/10'
                                     }`}
                                 >
                                     Draft
@@ -260,25 +266,26 @@ export default function MyExpensesPage() {
                              setShowCategoryFilter(false);
                              setShowStatusFilter(false);
                          }}
-                         className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
+                         className={`flex items-center gap-2 px-4 py-2 text-sm font-bold uppercase tracking-wide transition-colors border ${
                              (startDate || endDate)
                              ? 'bg-[#022c22] text-white border-[#022c22]'
-                             : 'bg-white text-foreground border-border hover:bg-gray-50'
+                             : 'bg-white text-[#022c22] border-gray-200 hover:bg-gray-50'
                          }`}
+                         style={{ borderRadius: 0 }}
                     >
                         <span>Date: {(startDate || endDate) ? 'Filtered' : (dateSort === 'newest' ? 'Newest' : 'Oldest')}</span>
                         <ChevronDown className="w-4 h-4" />
                     </button>
 
                     {showDateFilter && (
-                        <div className="absolute top-full left-0 mt-2 w-72 bg-[#022c22] border border-white/10 rounded-xl shadow-xl z-20 overflow-hidden animate-scale-in p-4">
+                        <div className="absolute top-full left-0 mt-2 w-72 bg-[#022c22] border border-white/10 shadow-xl z-20 overflow-hidden p-4" style={{ borderRadius: 0 }}>
                             {/* Sort Options */}
                             <div className="mb-4">
                                 <label className="text-xs text-white/50 uppercase font-semibold mb-2 block">Sort Order</label>
                                 <div className="flex gap-2">
                                      <button
                                         onClick={() => setDateSort('newest')}
-                                        className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium transition-colors ${
+                                        className={`flex-1 py-1.5 px-3 uppercase text-xs font-bold transition-colors ${
                                             dateSort === 'newest' ? 'bg-[#bfd852] text-[#022c22]' : 'bg-white/10 text-white hover:bg-white/20'
                                         }`}
                                     >
@@ -286,7 +293,7 @@ export default function MyExpensesPage() {
                                     </button>
                                     <button
                                         onClick={() => setDateSort('oldest')}
-                                        className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium transition-colors ${
+                                        className={`flex-1 py-1.5 px-3 uppercase text-xs font-bold transition-colors ${
                                             dateSort === 'oldest' ? 'bg-[#bfd852] text-[#022c22]' : 'bg-white/10 text-white hover:bg-white/20'
                                         }`}
                                     >
@@ -305,7 +312,7 @@ export default function MyExpensesPage() {
                                             type="date"
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
-                                            className="w-full bg-black/20 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white focus:border-[#bfd852] outline-none"
+                                            className="w-full bg-black/20 border border-white/10 px-2 py-1.5 text-sm text-white focus:border-[#bfd852] outline-none"
                                         />
                                     </div>
                                     <div className="flex flex-col gap-1">
@@ -314,7 +321,7 @@ export default function MyExpensesPage() {
                                             type="date"
                                             value={endDate}
                                             onChange={(e) => setEndDate(e.target.value)}
-                                            className="w-full bg-black/20 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-white focus:border-[#bfd852] outline-none"
+                                            className="w-full bg-black/20 border border-white/10 px-2 py-1.5 text-sm text-white focus:border-[#bfd852] outline-none"
                                         />
                                     </div>
                                 </div>
@@ -322,7 +329,7 @@ export default function MyExpensesPage() {
 
                             <button
                                 onClick={() => setShowDateFilter(false)}
-                                className="w-full mt-4 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-sm font-medium transition-colors"
+                                className="w-full mt-4 bg-white/10 hover:bg-white/20 text-white py-2 text-sm font-bold uppercase transition-colors"
                             >
                                 Apply
                             </button>
@@ -344,7 +351,7 @@ export default function MyExpensesPage() {
                             setShowStatusFilter(false);
                             setShowDateFilter(false);
                          }}
-                        className="flex items-center gap-1.5 px-3 py-2 text-sm text-red-500 hover:text-red-700 font-medium transition-colors ml-auto"
+                        className="flex items-center gap-1.5 px-3 py-2 text-sm text-red-500 hover:text-red-700 font-bold uppercase tracking-wide transition-colors ml-auto"
                     >
                         <X className="w-4 h-4" />
                         Clear Filters

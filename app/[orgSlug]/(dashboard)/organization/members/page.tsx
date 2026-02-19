@@ -13,8 +13,6 @@ import { regenerateInviteCode } from '@/lib/organization-service';
 import {
     Users,
     Mail,
-    Shield,
-    MoreVertical,
     Trash2,
     Copy,
     RefreshCw,
@@ -133,15 +131,16 @@ export default function MembersPage() {
     const canManage = ['owner', 'admin'].includes(currentUserRole);
 
     return (
-        <div className="container mx-auto px-6 py-8 max-w-5xl h-full flex flex-col">
+        <div className="mx-auto px-6 py-10" style={{ maxWidth: 1000 }}>
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8 pb-6" style={{ borderBottom: '1px solid rgba(2,44,34,0.1)' }}>
                 <div>
-                    <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
-                        <Users className="w-8 h-8" />
+                     <p className="el-callout-text mb-2">Team Management</p>
+                    <h1 className="font-bold flex items-center gap-3" style={{ fontSize: 'clamp(24px, 3vw, 36px)', color: 'var(--el-primary)', lineHeight: 1.1 }}>
+                        <Users className="w-8 h-8" style={{ color: 'var(--el-accent)' }} />
                         Members & Roles
                     </h1>
-                    <p className="text-foreground-muted mt-1">
+                    <p className="mt-2 text-sm" style={{ color: 'var(--el-primary)', opacity: 0.6 }}>
                         Manage access and permissions for {currentOrg?.name}
                     </p>
                 </div>
@@ -149,72 +148,106 @@ export default function MembersPage() {
 
             {/* Invite Code Section (Only for Admins) */}
             {canManage && (
-                <div className="bg-white p-6 rounded-2xl border border-border shadow-sm mb-8 animate-fade-in relative overflow-hidden">
-                     <div className="absolute top-0 right-0 p-6 opacity-5">
-                        <UserPlus className="w-32 h-32 text-primary" />
-                    </div>
-                    <div className="relative z-10">
-                        <h2 className="text-lg font-bold text-primary mb-2 flex items-center gap-2">
-                             <Mail className="w-5 h-5" />
-                             Invite New Members
-                        </h2>
-                        <p className="text-sm text-gray-500 mb-4 max-w-xl">
-                            Share this code with your team. They can join by entering this code when creating an account or joining an organization.
-                        </p>
+                <div
+                    className="mb-8 relative overflow-hidden"
+                    style={{
+                        backgroundColor: 'var(--el-white)',
+                        border: '1.5px solid var(--el-primary)',
+                    }}
+                >
+                    {/* Top Accent */}
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, backgroundColor: 'var(--el-accent)' }} />
 
-                        <div className="flex items-center gap-3 max-w-md">
-                            <div className="flex-1 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg px-4 py-3 text-center font-mono text-xl font-bold tracking-widest text-[#022c22]">
-                                {inviteCode || 'NO-CODE'}
+                    <div className="p-8 relative z-10">
+                        <div className="flex items-start justify-between gap-6">
+                            <div>
+                                <h2 className="text-lg font-bold mb-2 flex items-center gap-2" style={{ color: 'var(--el-primary)' }}>
+                                     <Mail className="w-5 h-5" />
+                                     Invite New Members
+                                </h2>
+                                <p className="text-sm mb-6 max-w-xl" style={{ color: 'var(--el-primary)', opacity: 0.6 }}>
+                                    Share this code with your team. They can join by entering this code when creating an account or joining an organization.
+                                </p>
+
+                                <div className="flex items-center gap-3 max-w-md">
+                                    <div className="flex-1 px-4 py-3 text-center font-mono text-xl font-bold tracking-widest" style={{ backgroundColor: 'rgba(2,44,34,0.03)', border: '2px dashed rgba(2,44,34,0.15)', color: 'var(--el-primary)' }}>
+                                        {inviteCode || 'NO-CODE'}
+                                    </div>
+                                    <button
+                                        onClick={handleCopyCode}
+                                        className="p-3 transition-colors border"
+                                        style={{ backgroundColor: 'var(--el-white)', borderColor: 'rgba(2,44,34,0.1)', color: 'var(--el-primary)' }}
+                                        title="Copy Code"
+                                    >
+                                        {copied ? <Check className="w-5 h-5" style={{ color: 'var(--el-accent)' }} /> : <Copy className="w-5 h-5" />}
+                                    </button>
+                                    <button
+                                        onClick={onRegenerateClick}
+                                        disabled={regenerating}
+                                        className="p-3 transition-colors border"
+                                        style={{ backgroundColor: 'var(--el-white)', borderColor: 'rgba(2,44,34,0.1)', color: 'var(--el-primary)' }}
+                                        title="Regenerate Code"
+                                    >
+                                        <RefreshCw className={`w-5 h-5 ${regenerating ? 'animate-spin' : ''}`} />
+                                    </button>
+                                </div>
                             </div>
-                            <button
-                                onClick={handleCopyCode}
-                                className="p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-gray-700"
-                                title="Copy Code"
-                            >
-                                {copied ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5" />}
-                            </button>
-                            <button
-                                onClick={onRegenerateClick}
-                                disabled={regenerating}
-                                className="p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-gray-700"
-                                title="Regenerate Code"
-                            >
-                                <RefreshCw className={`w-5 h-5 ${regenerating ? 'animate-spin' : ''}`} />
-                            </button>
+                            <UserPlus className="w-24 h-24 absolute right-6 top-6 opacity-5 pointer-events-none" style={{ color: 'var(--el-primary)' }} />
                         </div>
                     </div>
                 </div>
             )}
 
             {/* Members List */}
-            <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden flex-1 flex flex-col">
-                 <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                    <h2 className="text-lg font-bold text-primary">
+            <div
+                className="flex flex-col"
+                style={{
+                    backgroundColor: 'var(--el-white)',
+                    border: '1.5px solid var(--el-primary)',
+                }}
+            >
+                 <div className="p-6 border-b flex justify-between items-center" style={{ borderBottom: '1px solid rgba(2,44,34,0.1)', backgroundColor: 'rgba(2,44,34,0.02)' }}>
+                    <h2 className="text-lg font-bold" style={{ color: 'var(--el-primary)' }}>
                         Team Members ({members.length})
                     </h2>
                 </div>
 
                 <div className="overflow-x-auto flex-1">
-                    <table className="w-full text-left">
-                        <thead className="bg-gray-50 text-gray-600 border-b border-gray-200">
+                    <table className="w-full text-left text-sm">
+                        <thead>
                              <tr>
-                                <th className="px-6 py-4 font-semibold">Member</th>
-                                <th className="px-6 py-4 font-semibold">Role</th>
-                                <th className="px-6 py-4 font-semibold">Joined At</th>
-                                {canManage && <th className="px-6 py-4 font-semibold text-right">Actions</th>}
+                                {['Member', 'Role', 'Joined At', canManage ? 'Actions' : ''].map((h, i) => (
+                                    h && (
+                                    <th
+                                        key={h}
+                                        className="px-6 py-4 el-callout-text"
+                                        style={{
+                                            fontSize: 10,
+                                            letterSpacing: '1.5px',
+                                            borderBottom: '1px solid rgba(2,44,34,0.1)',
+                                            textAlign: h === 'Actions' ? 'right' : 'left'
+                                        }}
+                                    >
+                                        {h}
+                                    </th>
+                                    )
+                                ))}
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody>
                             {members.map((member) => (
-                                <tr key={member.id} className="hover:bg-gray-50/50 transition-colors">
+                                <tr key={member.id} className="hover:bg-[rgba(191,216,82,0.05)] transition-colors" style={{ borderBottom: '1px solid rgba(2,44,34,0.05)' }}>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-secondary text-primary font-bold flex items-center justify-center text-lg">
+                                            <div
+                                                className="w-10 h-10 flex-shrink-0 flex items-center justify-center font-bold text-lg"
+                                                style={{ backgroundColor: 'var(--el-primary)', color: 'var(--el-accent)' }}
+                                            >
                                                 {member.users?.full_name?.charAt(0) || 'U'}
                                             </div>
                                             <div>
-                                                <div className="font-semibold text-gray-900">{member.users?.full_name}</div>
-                                                <div className="text-sm text-gray-500">{member.users?.email}</div>
+                                                <div className="font-bold" style={{ color: 'var(--el-primary)' }}>{member.users?.full_name}</div>
+                                                <div className="text-xs" style={{ color: 'var(--el-primary)', opacity: 0.5 }}>{member.users?.email}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -223,25 +256,26 @@ export default function MembersPage() {
                                             <select
                                                 value={member.role}
                                                 onChange={(e) => onRoleChangeClick(member.user_id, e.target.value)}
-                                                className="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-primary focus:border-primary block p-2 outline-none cursor-pointer hover:border-gray-400 transition-colors"
+                                                className="border text-sm p-2 outline-none cursor-pointer hover:border-gray-400 transition-colors bg-transparent font-medium"
+                                                style={{ borderColor: 'rgba(2,44,34,0.2)', color: 'var(--el-primary)' }}
                                             >
-                                                <option value="modules">Select Role...</option>
                                                 <option value="admin">Admin</option>
                                                 <option value="accountant">Accountant</option>
                                                 <option value="member">Member</option>
                                                 <option value="viewer">Viewer</option>
                                             </select>
                                         ) : (
-                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize
-                                                ${member.role === 'owner' ? 'bg-purple-100 text-purple-800' :
-                                                  member.role === 'admin' ? 'bg-blue-100 text-blue-800' :
-                                                  member.role === 'accountant' ? 'bg-green-100 text-green-800' :
-                                                  'bg-gray-100 text-gray-800'}`}>
+                                            <span className={`inline-flex items-center px-2.5 py-1 text-xs font-bold uppercase tracking-wider border ${
+                                                member.role === 'owner' ? 'bg-purple-100 text-purple-800 border-purple-200' :
+                                                member.role === 'admin' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                                                member.role === 'accountant' ? 'bg-[#bfd852]/20 text-[#022c22] border-[#bfd852]/40' :
+                                                'bg-gray-100 text-gray-800 border-gray-200'}`}
+                                            >
                                                 {member.role}
                                             </span>
                                         )}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-500">
+                                    <td className="px-6 py-4 text-sm font-medium" style={{ color: 'var(--el-primary)', opacity: 0.6 }}>
                                         {new Date(member.joined_at).toLocaleDateString('en-GB')}
                                     </td>
                                     {canManage && (
@@ -249,7 +283,7 @@ export default function MembersPage() {
                                             {member.role !== 'owner' && member.user_id !== currentUser?.id && (
                                                 <button
                                                     onClick={() => onRemoveMemberClick(member.user_id)}
-                                                    className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                                                    className="p-2 transition-colors text-red-400 hover:text-red-600 hover:bg-red-50"
                                                     title="Remove Member"
                                                 >
                                                     <Trash2 className="w-5 h-5" />

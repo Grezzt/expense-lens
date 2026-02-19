@@ -37,17 +37,29 @@ export default function RecentTransactions({ transactions }: RecentTransactionsP
       VERIFIED: {
         icon: CheckCircle,
         text: 'Verified',
-        className: 'bg-green-100 text-green-700',
+        style: {
+          backgroundColor: 'rgba(191,216,82,0.15)',
+          color: 'var(--el-primary)',
+          border: '1px solid rgba(191,216,82,0.4)',
+        },
       },
       DRAFT: {
         icon: Clock,
         text: 'Processing',
-        className: 'bg-yellow-100 text-yellow-700',
+        style: {
+          backgroundColor: 'rgba(245,158,11,0.1)',
+          color: '#92400e',
+          border: '1px solid rgba(245,158,11,0.3)',
+        },
       },
       FLAGGED: {
         icon: AlertCircle,
         text: 'Flagged',
-        className: 'bg-red-100 text-red-700',
+        style: {
+          backgroundColor: 'rgba(220,38,38,0.08)',
+          color: '#dc2626',
+          border: '1px solid rgba(220,38,38,0.25)',
+        },
       },
     };
 
@@ -55,7 +67,10 @@ export default function RecentTransactions({ transactions }: RecentTransactionsP
     const Icon = badge.icon;
 
     return (
-      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${badge.className}`}>
+      <span
+        className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold"
+        style={badge.style}
+      >
         <Icon className="w-3 h-3" />
         {badge.text}
       </span>
@@ -63,41 +78,107 @@ export default function RecentTransactions({ transactions }: RecentTransactionsP
   };
 
   return (
-    <div className="card p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-foreground mb-4">
-        Recent Transactions
-      </h3>
-      <div className="overflow-x-auto">
+    <div
+      style={{
+        backgroundColor: 'var(--el-white)',
+        border: '1.5px solid var(--el-primary)',
+        position: 'relative',
+      }}
+    >
+      {/* Top accent bar */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          backgroundColor: 'var(--el-accent)',
+        }}
+      />
+
+      {/* Header */}
+      <div
+        className="px-6 pt-7 pb-4"
+        style={{ borderBottom: '1px solid rgba(2,44,34,0.1)' }}
+      >
+        <p className="el-callout-text" style={{ fontSize: 11, letterSpacing: '1.5px' }}>
+          Recent Activity
+        </p>
+        <h3
+          className="font-bold mt-1"
+          style={{ color: 'var(--el-primary)', fontSize: 18, letterSpacing: '-0.01em' }}
+        >
+          Recent Transactions
+        </h3>
+      </div>
+
+      <div className="overflow-x-auto px-6 pb-6 pt-2">
         <table className="w-full">
           <thead>
             <tr>
-              <th className="text-left py-3 px-2 text-xs font-semibold text-foreground-muted uppercase tracking-wide">Merchant</th>
-              <th className="text-left py-3 px-2 text-xs font-semibold text-foreground-muted uppercase tracking-wide">Category</th>
-              <th className="text-left py-3 px-2 text-xs font-semibold text-foreground-muted uppercase tracking-wide">Date</th>
-              <th className="text-right py-3 px-2 text-xs font-semibold text-foreground-muted uppercase tracking-wide">Amount</th>
-              <th className="text-center py-3 px-2 text-xs font-semibold text-foreground-muted uppercase tracking-wide">Status</th>
+              {['Merchant', 'Category', 'Date', 'Amount', 'Status'].map((h, i) => (
+                <th
+                  key={h}
+                  className="py-3 px-2 el-callout-text"
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: '1.5px',
+                    textAlign: i === 3 ? 'right' : i === 4 ? 'center' : 'left',
+                    borderBottom: '1px solid rgba(2,44,34,0.1)',
+                  }}
+                >
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {transactions.length === 0 ? (
               <tr>
-                <td colSpan={5} className="text-center py-8 text-foreground-muted">
+                <td
+                  colSpan={5}
+                  className="text-center py-12"
+                  style={{ color: 'var(--el-primary)', opacity: 0.4, fontSize: 14 }}
+                >
                   No transactions yet
                 </td>
               </tr>
             ) : (
               transactions.map((transaction) => (
-                <tr key={transaction.id} className="hover:bg-card-hover transition-colors">
-                  <td className="py-3 px-2 text-sm font-medium text-foreground">
+                <tr
+                  key={transaction.id}
+                  className="transition-colors"
+                  style={{ borderBottom: '1px solid rgba(2,44,34,0.05)' }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(191,216,82,0.05)';
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                  }}
+                >
+                  <td
+                    className="py-3 px-2 text-sm font-semibold"
+                    style={{ color: 'var(--el-primary)' }}
+                  >
                     {transaction.merchant_name}
                   </td>
-                  <td className="py-3 px-2 text-sm text-foreground-muted">
+                  <td
+                    className="py-3 px-2 text-sm"
+                    style={{ color: 'var(--el-primary)', opacity: 0.55 }}
+                  >
                     {transaction.category}
                   </td>
-                  <td className="py-3 px-2 text-sm text-foreground-muted">
+                  <td
+                    className="py-3 px-2 text-sm"
+                    style={{ color: 'var(--el-primary)', opacity: 0.55 }}
+                  >
                     {formatDate(transaction.date)}
                   </td>
-                  <td className="py-3 px-2 text-sm font-semibold text-right text-foreground">
+                  <td
+                    className="py-3 px-2 text-sm font-bold text-right"
+                    style={{ color: 'var(--el-primary)' }}
+                  >
                     {formatCurrency(transaction.amount)}
                   </td>
                   <td className="py-3 px-2 text-center">

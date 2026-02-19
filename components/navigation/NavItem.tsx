@@ -21,7 +21,6 @@ export default function NavItem({ icon: Icon, label, route, badge, visibleTo, hi
 
   const isActive = pathname === route || pathname.startsWith(route + '/');
 
-  // Check if user has access to this route
   if (!canAccessRoute(visibleTo)) {
     return null;
   }
@@ -29,25 +28,42 @@ export default function NavItem({ icon: Icon, label, route, badge, visibleTo, hi
   return (
     <Link
       href={route}
-      className={`flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all ${
-        isActive
-          ? 'bg-primary text-white'
-          : 'hover:bg-card-hover text-foreground'
-      }`}
+      className="flex items-center justify-between gap-3 px-3 py-2.5 transition-all"
+      style={{
+        backgroundColor: isActive ? 'var(--el-primary)' : 'transparent',
+        color: isActive ? 'var(--el-white)' : 'var(--el-primary)',
+        borderRadius: 0,
+        borderLeft: isActive ? '3px solid var(--el-accent)' : '3px solid transparent',
+        fontWeight: isActive ? 600 : 400,
+        transition: 'all 0.15s ease',
+      }}
+      onMouseEnter={e => {
+        if (!isActive) {
+          (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(2,44,34,0.07)';
+        }
+      }}
+      onMouseLeave={e => {
+        if (!isActive) {
+          (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+        }
+      }}
     >
       <div className="flex items-center gap-3">
-        <Icon className="w-5 h-5" />
-        <span className="text-sm font-medium">{label}</span>
+        <Icon
+          className="w-4 h-4 flex-shrink-0"
+          style={{ color: isActive ? 'var(--el-accent)' : 'var(--el-primary)', opacity: isActive ? 1 : 0.6 }}
+        />
+        <span className="text-sm">{label}</span>
       </div>
 
       {badge !== null && badge !== undefined && badge > 0 && (
-        <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${
-          isActive
-            ? 'bg-white text-primary'
-            : highlight
-            ? 'bg-error text-white'
-            : 'bg-secondary text-primary'
-        }`}>
+        <span
+          className="px-2 py-0.5 text-xs font-bold"
+          style={{
+            backgroundColor: isActive ? 'var(--el-accent)' : highlight ? 'var(--error)' : 'var(--el-accent)',
+            color: 'var(--el-primary)',
+          }}
+        >
           {badge}
         </span>
       )}

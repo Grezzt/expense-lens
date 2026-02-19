@@ -22,37 +22,80 @@ export default function SpendingTrendChart({ data }: SpendingTrendChartProps) {
   };
 
   return (
-    <div className="card p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-foreground mb-4">
-        Spending Trend
-      </h3>
-      <div className="h-64">
+    <div
+      style={{
+        backgroundColor: 'var(--el-white)',
+        border: '1.5px solid var(--el-primary)',
+        padding: '24px 20px',
+        position: 'relative',
+      }}
+    >
+      {/* Top accent bar */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          backgroundColor: 'var(--el-accent)',
+        }}
+      />
+
+      {/* Header */}
+      <div className="mb-5">
+        <p className="el-callout-text" style={{ fontSize: 11, letterSpacing: '1.5px' }}>
+          Spending Trend
+        </p>
+        <h3
+          className="font-bold mt-1"
+          style={{
+            color: 'var(--el-primary)',
+            fontSize: 18,
+            letterSpacing: '-0.01em',
+          }}
+        >
+          Pengeluaran Periode Ini
+        </h3>
+      </div>
+
+      <div className="h-56">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data}>
+          <BarChart data={data} barCategoryGap="35%">
             <XAxis
               dataKey="date"
-              stroke="#666"
-              style={{ fontSize: '12px' }}
+              stroke="rgba(2,44,34,0.3)"
+              tick={{ fill: 'var(--el-primary)', fontSize: 11, fontWeight: 500 }}
+              axisLine={false}
+              tickLine={false}
             />
             <YAxis
-              stroke="#666"
-              style={{ fontSize: '12px' }}
+              stroke="rgba(2,44,34,0.3)"
+              tick={{ fill: 'var(--el-primary)', fontSize: 11 }}
               tickFormatter={formatCurrency}
+              axisLine={false}
+              tickLine={false}
+              width={70}
             />
             <Tooltip
-              formatter={(value: number) => formatCurrency(value)}
+              formatter={(value: number) => [formatCurrency(value), 'Amount']}
               contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                padding: '8px 12px',
+                backgroundColor: 'var(--el-primary)',
+                border: 'none',
+                borderRadius: 0,
+                padding: '10px 14px',
+                color: 'var(--el-white)',
+                fontSize: 13,
+                boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
               }}
+              labelStyle={{ color: 'var(--el-accent)', fontWeight: 700, fontSize: 12 }}
+              cursor={{ fill: 'rgba(191,216,82,0.08)' }}
             />
             <Bar
               dataKey="amount"
-              fill="#bfd852"
-              radius={[8, 8, 0, 0]}
-              maxBarSize={40}
+              fill="var(--el-accent)"
+              radius={[0, 0, 0, 0]}
+              maxBarSize={36}
             />
           </BarChart>
         </ResponsiveContainer>

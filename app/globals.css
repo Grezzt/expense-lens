@@ -449,3 +449,37 @@ input:-webkit-autofill:active {
   }
   .el-hover-card:hover { transform: translate(-8px, -8px); }
 }
+
+/* Force text colors on card hover */
+.el-hover-card:hover h1,
+.el-hover-card:hover h2,
+.el-hover-card:hover h3,
+.el-hover-card:hover h4,
+.el-hover-card:hover h5,
+.el-hover-card:hover h6,
+.el-hover-card:hover p,
+.el-hover-card:hover span,
+.el-hover-card:hover div,
+.el-hover-card:hover .font-bold {
+  color: var(--el-white) !important;
+  border-color: rgba(255,255,255,0.2);
+}
+
+/* Specific overrides for labels */
+.el-hover-card:hover .el-callout-text {
+  color: var(--el-accent) !important;
+  opacity: 1 !important;
+}
+
+/* Keep accent icons accented */
+.el-hover-card:hover .el-hover-card-icon {
+  color: var(--el-accent) !important;
+  background-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Fix for muted text */
+.el-hover-card:hover .opacity-60,
+.el-hover-card:hover .text-gray-500,
+.el-hover-card:hover .text-gray-400 {
+  color: rgba(255,255,255,0.7) !important;
+}

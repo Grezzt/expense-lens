@@ -171,12 +171,17 @@ export default function DashboardPage() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="container mx-auto px-6 py-8 max-w-7xl">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-foreground-muted">Loading dashboard...</p>
-          </div>
+      <div className="flex items-center justify-center h-full min-h-screen" style={{ backgroundColor: '#f1f1f1' }}>
+        <div className="text-center">
+          <div
+            className="w-16 h-16 mx-auto mb-5 animate-spin"
+            style={{
+              border: '3px solid rgba(2,44,34,0.1)',
+              borderTop: '3px solid var(--el-accent)',
+              borderRadius: '50%',
+            }}
+          />
+          <p className="el-callout-text" style={{ fontSize: 11 }}>Loading Dashboard</p>
         </div>
       </div>
     );
@@ -185,19 +190,24 @@ export default function DashboardPage() {
   // Show message if no organization
   if (!currentOrg) {
     return (
-      <div className="container mx-auto px-6 py-8 max-w-7xl">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <p className="text-xl font-semibold text-primary mb-2">No Organization Selected</p>
-            <p className="text-foreground-muted">Please select an organization to view dashboard</p>
-          </div>
+      <div className="flex items-center justify-center h-full min-h-screen" style={{ backgroundColor: '#f1f1f1' }}>
+        <div className="text-center">
+          <p
+            className="font-bold mb-2"
+            style={{ fontSize: 20, color: 'var(--el-primary)', letterSpacing: '-0.01em' }}
+          >
+            No Organization Selected
+          </p>
+          <p style={{ color: 'var(--el-primary)', opacity: 0.5, fontSize: 14 }}>
+            Please select an organization to view dashboard
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-6 py-8 max-w-7xl">
+    <div className="mx-auto px-6 py-10" style={{ maxWidth: 1400 }}>
       {/* Header */}
       <DashboardHeader
         userName={currentUser?.full_name || 'User'}

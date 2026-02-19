@@ -1,15 +1,17 @@
 'use client';
 
 import {
-  FileText,
-  Eye,
   CheckCircle2,
   XCircle,
   Calendar,
   Tag,
-  User as UserIcon
+  User as UserIcon,
+  Check,
+  X,
+  FileText
 } from 'lucide-react';
 import { Expense } from '@/lib/supabase';
+import { useState } from 'react';
 
 interface ApprovalListProps {
   expenses: Expense[];
@@ -24,7 +26,7 @@ export default function ApprovalList({ expenses, onView, onApprove, onReject, is
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="h-48 bg-white/5 animate-pulse rounded-2xl border border-white/5" />
+          <div key={i} className="h-48 bg-gray-100 animate-pulse" style={{ border: '1px solid rgba(2,44,34,0.1)' }} />
         ))}
       </div>
     );
@@ -32,90 +34,93 @@ export default function ApprovalList({ expenses, onView, onApprove, onReject, is
 
   if (expenses.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center bg-black/20 rounded-2xl border border-white/5">
-        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
-          <CheckCircle2 className="w-8 h-8 text-white/20" />
+      <div className="flex flex-col items-center justify-center py-20 text-center" style={{ backgroundColor: 'var(--el-white)', border: '1px solid rgba(2,44,34,0.1)' }}>
+        <div className="w-16 h-16 flex items-center justify-center mb-4" style={{ backgroundColor: 'rgba(2,44,34,0.03)' }}>
+          <CheckCircle2 className="w-8 h-8" style={{ color: 'var(--el-primary)', opacity: 0.3 }} />
         </div>
-        <h3 className="text-lg font-semibold text-white mb-1">All caught up!</h3>
-        <p className="text-secondary/60 text-sm">No expenses pending approval.</p>
+        <h3 className="text-lg font-bold mb-1" style={{ color: 'var(--el-primary)' }}>All caught up!</h3>
+        <p className="text-sm" style={{ color: 'var(--el-primary)', opacity: 0.6 }}>No expenses pending approval.</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {expenses.map((expense) => (
         <div
             key={expense.id}
-            className="group bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 hover:border-[#bfd852]/50 hover:bg-black/60 transition-all duration-300 cursor-pointer flex flex-col gap-4 relative overflow-hidden"
+            className="group el-hover-card-wrapper"
             onClick={() => onView(expense)}
+            style={{ cursor: 'pointer', borderRight: 'none' }} // Override wrapper border for grid cards if needed, but standard wrapper is fine.
         >
-            {/* Header: User & Date */}
-            <div className="flex justify-between items-start">
-                <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center shrink-0 border border-secondary/30">
-                        <UserIcon className="w-5 h-5 text-secondary" />
-                     </div>
-                     <div>
-                         <p className="text-sm font-medium text-white">
-                             Requested by <span className="text-secondary">Member</span>
-                             {/* Need to fetch user details or display ID if name not available in expense object yet */}
-                         </p>
-                         <div className="flex items-center gap-2 text-xs text-white/60 mt-0.5">
-                             <Calendar className="w-3 h-3" />
-                             {new Date(expense.date).toLocaleDateString('en-GB', {
-                                day: 'numeric',
-                                month: 'short',
-                                year: 'numeric'
-                              })}
+             <div className="el-hover-card relative flex flex-col h-full" style={{ padding: 20 }}>
+
+                {/* Header: User & Date */}
+                <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-3">
+                         <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: 'var(--el-primary)', color: 'var(--el-accent)' }}>
+                            <UserIcon className="w-5 h-5" />
                          </div>
-                     </div>
+                         <div>
+                             <p className="text-sm font-bold" style={{ color: 'var(--el-primary)' }}>
+                                 Member Request
+                             </p>
+                             <div className="flex items-center gap-2 text-xs font-medium mt-0.5" style={{ color: 'var(--el-primary)', opacity: 0.6 }}>
+                                 <Calendar className="w-3 h-3" />
+                                 {new Date(expense.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                             </div>
+                         </div>
+                    </div>
                 </div>
-            </div>
 
-            {/* Merchant & Description */}
-            <div>
-                 <h3 className="font-semibold text-white line-clamp-1 text-lg">{expense.merchant_name}</h3>
-                 {expense.description && (
-                    <p className="text-sm text-white/60 line-clamp-1 mt-1">
-                        "{expense.description}"
-                    </p>
+                {/* Content */}
+                <div className="mb-4 flex-1">
+                     <h3 className="font-bold text-lg mb-1 line-clamp-1" style={{ color: 'var(--el-primary)' }}>{expense.merchant_name}</h3>
+                     {expense.description && (
+                        <p className="text-sm line-clamp-2 italic" style={{ color: 'var(--el-primary)', opacity: 0.7 }}>
+                            "{expense.description}"
+                        </p>
+                    )}
+                </div>
+
+                {/* Receipt Preview */}
+                {expense.image_url && (
+                    <div className="h-24 w-full mb-4 overflow-hidden border" style={{ borderColor: 'rgba(2,44,34,0.1)', backgroundColor: '#f9fafb' }}>
+                         <img src={expense.image_url} alt="Receipt" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                    </div>
                 )}
-            </div>
 
-            {/* Receipt Image Preview (Mini) */}
-            {expense.image_url && (
-                <div className="h-20 w-full rounded-lg overflow-hidden bg-white/5 border border-white/10">
-                     <img src={expense.image_url} alt="Receipt" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
-                </div>
-            )}
+                {/* Footer: Amount & Actions */}
+                <div className="mt-auto pt-4 flex justify-between items-end border-t" style={{ borderColor: 'rgba(2,44,34,0.1)' }}>
+                    <div>
+                        <span className="text-xs uppercase tracking-wider font-bold block mb-0.5" style={{ color: 'var(--el-primary)', opacity: 0.5 }}>Amount</span>
+                        <p className="text-xl font-bold" style={{ color: 'var(--el-primary)' }}>
+                             Rp {expense.amount.toLocaleString('id-ID')}
+                        </p>
+                    </div>
 
-            {/* Footer: Amount & Actions */}
-            <div className="mt-auto pt-3 border-t border-white/10 flex justify-between items-center">
-                <div>
-                    <span className="text-xs text-white/40 uppercase tracking-wider font-semibold">Amount</span>
-                    <p className="text-xl font-bold text-white">
-                        Rp {expense.amount.toLocaleString('id-ID')}
-                    </p>
+                    <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                        <button
+                            onClick={() => onReject(expense.id)}
+                            className="w-9 h-9 flex items-center justify-center border transition-colors hover:bg-red-50 hover:border-red-200"
+                            style={{ borderColor: 'rgba(2,44,34,0.1)', color: '#ef4444' }}
+                            title="Reject"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => onApprove(expense.id)}
+                            className="w-9 h-9 flex items-center justify-center overflow-hidden relative"
+                            style={{ backgroundColor: 'var(--el-accent)', color: 'var(--el-primary)' }}
+                            title="Approve"
+                        >
+                            <Check className="w-5 h-5 font-bold" />
+                        </button>
+                    </div>
                 </div>
-
-                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                    <button
-                        onClick={() => onReject(expense.id)}
-                        className="p-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-colors border border-red-500/20"
-                        title="Reject"
-                    >
-                        <XCircle className="w-5 h-5" />
-                    </button>
-                    <button
-                        onClick={() => onApprove(expense.id)}
-                        className="p-2 bg-[#bfd852]/10 text-[#bfd852] hover:bg-[#bfd852] hover:text-[#022c22] rounded-lg transition-colors border border-[#bfd852]/20"
-                        title="Approve"
-                    >
-                        <CheckCircle2 className="w-5 h-5" />
-                    </button>
-                </div>
-            </div>
+             </div>
+             {/* Lime Shadow */}
+             <div className="el-hover-card-shadow" />
         </div>
       ))}
     </div>

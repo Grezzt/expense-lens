@@ -12,6 +12,18 @@ interface CategoryAllocationChartProps {
   data: CategoryData[];
 }
 
+// Themed palette derived from el- design system
+const EL_PALETTE = [
+  '#bfd852', // el-accent lime
+  '#022c22', // el-primary dark green
+  '#5a8a6a', // mid green
+  '#8ab878', // light green
+  '#d4ef82', // pale lime
+  '#034433', // deep forest
+  '#3d6b50', // moss green
+  '#a0c84a', // yellow-green
+];
+
 export default function CategoryAllocationChart({ data }: CategoryAllocationChartProps) {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('id-ID', {
@@ -31,60 +43,102 @@ export default function CategoryAllocationChart({ data }: CategoryAllocationChar
     outerRadius,
     percent,
   }: any) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.55;
     const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
     const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
 
-    if (percent < 0.05) return null; // Don't show label if less than 5%
+    if (percent < 0.06) return null;
 
     return (
       <text
         x={x}
         y={y}
         fill="white"
-        textAnchor={x > cx ? 'start' : 'end'}
+        textAnchor="middle"
         dominantBaseline="central"
-        className="text-xs font-semibold"
+        fontSize={11}
+        fontWeight={700}
       >
         {`${(percent * 100).toFixed(0)}%`}
       </text>
     );
   };
 
+  // Override colors with themed palette
+  const themedData = data.map((item, i) => ({
+    ...item,
+    color: EL_PALETTE[i % EL_PALETTE.length],
+  }));
+
   return (
-    <div className="card p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-foreground mb-4">
-        Allocation by Category
-      </h3>
-      <div className="h-64">
+    <div
+      style={{
+        backgroundColor: 'var(--el-white)',
+        border: '1.5px solid var(--el-primary)',
+        padding: '24px 20px',
+        position: 'relative',
+      }}
+    >
+      {/* Top accent bar */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          backgroundColor: 'var(--el-accent)',
+        }}
+      />
+
+      {/* Header */}
+      <div className="mb-5">
+        <p className="el-callout-text" style={{ fontSize: 11, letterSpacing: '1.5px' }}>
+          Category Breakdown
+        </p>
+        <h3
+          className="font-bold mt-1"
+          style={{
+            color: 'var(--el-primary)',
+            fontSize: 18,
+            letterSpacing: '-0.01em',
+          }}
+        >
+          Alokasi per Kategori
+        </h3>
+      </div>
+
+      <div className="h-56">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              data={data}
+              data={themedData}
               cx="50%"
               cy="50%"
               labelLine={false}
               label={renderCustomLabel}
-              outerRadius={80}
-              innerRadius={50}
-              fill="#8884d8"
+              outerRadius={75}
+              innerRadius={42}
+              fill="#022c22"
               dataKey="value"
               paddingAngle={2}
             >
-              {data.map((entry, index) => (
+              {themedData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: number) => formatCurrency(value)}
+              formatter={(value: number) => [formatCurrency(value), 'Amount']}
               contentStyle={{
-                backgroundColor: '#1F2937',
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                padding: '8px 12px',
-                color: '#fff',
+                backgroundColor: 'var(--el-primary)',
+                border: 'none',
+                borderRadius: 0,
+                padding: '10px 14px',
+                color: 'var(--el-white)',
+                fontSize: 13,
+                boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
               }}
-              labelStyle={{ color: '#9CA3AF' }}
+              labelStyle={{ color: 'var(--el-accent)', fontWeight: 700, fontSize: 12 }}
             />
             <Legend
               verticalAlign="bottom"
@@ -92,7 +146,7 @@ export default function CategoryAllocationChart({ data }: CategoryAllocationChar
               formatter={(value: string, entry: any) => {
                 const percentage = ((entry.payload.value / total) * 100).toFixed(1);
                 return (
-                  <span style={{ color: '#D1D5DB', fontSize: '11px' }}>
+                  <span style={{ color: 'var(--el-primary)', fontSize: '11px', fontWeight: 500 }}>
                     {value} ({percentage}%)
                   </span>
                 );
