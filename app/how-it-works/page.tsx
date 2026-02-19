@@ -58,7 +58,7 @@ const steps = [
     num: "04",
     title: "AI Extracts & Categorizes",
     time: "< 5 seconds",
-    desc: "Gemini Vision reads your receipt and extracts: merchant name, date, total amount, line items by name and price, and applicable taxes.",
+    desc: "AI reads your receipt and extracts: merchant name, date, total amount, line items by name and price, and applicable taxes.",
     detail: "The AI uses a structured output prompt that maps extracted fields to the ExpenseLens expense schema. Categories are determined by merchant type and transaction context. If the AI is unsure, it flags the expense for your review.",
     icon: (
       <svg viewBox="0 0 48 48" fill="none" className="w-10 h-10">

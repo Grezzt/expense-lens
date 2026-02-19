@@ -68,7 +68,7 @@ async function autoCategorize(merchantName: string): Promise<string> {
 }
 
 /**
- * Extract expense data from receipt image using Gemini Vision
+ * Extract expense data from receipt image using AI
  */
 export async function extractExpenseFromImage(imageUrl: string): Promise<ExtractedExpenseData> {
   try {

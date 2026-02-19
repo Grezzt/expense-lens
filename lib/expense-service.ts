@@ -14,7 +14,7 @@ export async function processReceiptUpload(
     // Step 1: Upload to Supabase Storage
     const uploadResult = await uploadImage(fileOrBase64);
 
-    // Step 2: Extract data using Gemini Vision
+    // Step 2: Extract data using AI
     const extractedData = await extractExpenseFromImage(uploadResult.public_url);
 
     // Step 3: Validate and correct data

@@ -15,7 +15,7 @@ const features = [
     id: "ocr",
     tag: "Smart OCR",
     title: "AI Receipt Scanning",
-    desc: "Upload or snap a photo of any receipt. Gemini Vision AI instantly reads merchant names, total amounts, line items, dates, and tax — all without you typing a single character.",
+    desc: "Upload or snap a photo of any receipt. AI instantly reads merchant names, total amounts, line items, dates, and tax — all without you typing a single character.",
     highlights: [
       "Supports JPG, PNG, and PDF formats",
       "Handles handwritten and printed receipts",

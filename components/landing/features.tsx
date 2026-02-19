@@ -23,7 +23,7 @@ const cards = [
     ),
     period: "Smart OCR",
     tagline: "Scan receipts instantly.",
-    blurb: "AI reads your receipts — amounts, merchants, dates — extracted in seconds with Gemini Vision.",
+    blurb: "AI reads your receipts — amounts, merchants, dates — extracted in seconds with AI.",
     cta: "Learn about OCR",
     href: "/features#ocr",
     borderRight: false,

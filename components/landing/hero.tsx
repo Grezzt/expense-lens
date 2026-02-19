@@ -126,18 +126,6 @@ export default function Hero() {
             backgroundColor: "var(--el-primary)",
           }}
         >
-          {/* AI badge */}
-          <div
-            className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 self-start"
-            style={{
-              border: "1px solid rgba(191,216,82,0.4)",
-              backgroundColor: "rgba(191,216,82,0.08)",
-            }}
-          >
-            <span style={{ color: "var(--el-accent)", fontSize: 11, fontWeight: 900, letterSpacing: 2, textTransform: "uppercase" }}>
-              ✦ Powered by Gemini AI
-            </span>
-          </div>
 
           {/* Headline */}
           <div className="overflow-hidden mb-8">

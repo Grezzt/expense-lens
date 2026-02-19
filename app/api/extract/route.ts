@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Extract data using Gemini Vision
+    // Extract data using AI
     const extractedData = await extractExpenseFromImage(imageUrl);
 
     // Validate and correct data

@@ -2,12 +2,12 @@
 
 🤖 **AI-Powered Expense Tracking & Business Automation**
 
-ExpenseLens adalah aplikasi full-stack Next.js yang menggunakan AI (Gemini Vision) untuk mengotomatisasi tracking pengeluaran dari foto nota/struk.
+ExpenseLens adalah aplikasi full-stack Next.js yang menggunakan AI (AI) untuk mengotomatisasi tracking pengeluaran dari foto nota/struk.
 
 ## ✨ Features
 
 - 📸 **Upload Receipt**: Drag & drop atau browse untuk upload foto nota
-- 🤖 **AI Auto-Extraction**: Gemini Vision mengekstrak merchant, amount, date secara otomatis
+- 🤖 **AI Auto-Extraction**: AI mengekstrak merchant, amount, date secara otomatis
 - 🏷️ **Auto-Categorization**: Kategorisasi otomatis berdasarkan merchant name
 - ✅ **Verification Workflow**: Review dan edit data sebelum finalisasi
 - 📊 **Smart Reports**: Export ke Excel dengan summary dan breakdown
@@ -17,7 +17,7 @@ ExpenseLens adalah aplikasi full-stack Next.js yang menggunakan AI (Gemini Visio
 
 - **Framework**: Next.js 14.1.0 (App Router)
 - **Language**: TypeScript 5.3.x
-- **AI**: LangChain 0.1.0 + Google Gemini Vision
+- **AI**: LangChain 0.1.0 + Google AI
 - **Database**: Supabase (PostgreSQL)
 - **Storage**: Supabase Storage
 - **Export**: ExcelJS
@@ -119,7 +119,7 @@ expense-lens/
 ## 🎯 Usage Flow
 
 1. **Upload Receipt**: Drag & drop foto nota ke upload area
-2. **AI Processing**: Gemini Vision mengekstrak data (merchant, amount, date, category)
+2. **AI Processing**: AI mengekstrak data (merchant, amount, date, category)
 3. **Review**: Data ditampilkan dengan status DRAFT
 4. **Verify**: Edit jika perlu, lalu klik "Verify"
 5. **Export**: Download laporan Excel untuk data yang sudah verified

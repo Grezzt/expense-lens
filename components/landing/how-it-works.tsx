@@ -79,12 +79,7 @@ export default function HowItWorks() {
         duration: 0.6,
         ease: "power2.out",
       });
-      gsap.from(".hiw-ai-box", {
-        scrollTrigger: { trigger: ".hiw-ai-box", start: "top 85%" },
-        y: 20,
-        opacity: 0,
-        duration: 0.8,
-      });
+
     },
     { scope: ref }
   );
@@ -206,64 +201,7 @@ export default function HowItWorks() {
           ))}
         </div>
 
-        {/* AI Role callout */}
-        <div
-          className="hiw-ai-box"
-          style={{
-            marginTop: 64,
-            border: "1px solid rgba(191,216,82,0.3)",
-            backgroundColor: "rgba(191,216,82,0.05)",
-            padding: "28px 32px",
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 20,
-          }}
-        >
-          {/* AI icon */}
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              flexShrink: 0,
-              backgroundColor: "var(--el-accent)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
-              <path d="M12 2 L14 9 L21 11 L14 13 L12 20 L10 13 L3 11 L10 9 Z" fill="#022c22" />
-            </svg>
-          </div>
 
-          <div>
-            <p
-              style={{
-                color: "var(--el-accent)",
-                fontSize: 11,
-                fontWeight: 900,
-                textTransform: "uppercase",
-                letterSpacing: 2,
-                marginBottom: 6,
-              }}
-            >
-              AI Role in ExpenseLens
-            </p>
-            <p
-              style={{
-                color: "var(--el-white)",
-                fontSize: 16,
-                lineHeight: 1.6,
-                maxWidth: 760,
-              }}
-            >
-              <strong style={{ color: "var(--el-accent)" }}>Gemini AI</strong> powers the core of ExpenseLens.
-              It reads receipt images via Vision OCR, identifies merchant names, total amounts, line items,
-              and taxes — then maps each expense to the best-matching category from your organization&apos;s
-              chart of accounts. The more you use it, the smarter it gets.
-            </p>
-          </div>
-        </div>
       </div>
     </section>
   );

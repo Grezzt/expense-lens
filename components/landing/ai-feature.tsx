@@ -9,7 +9,7 @@ import Link from "next/link";
 gsap.registerPlugin(ScrollTrigger);
 
 const aiFeatures = [
-  "Gemini Vision reads receipts in any format (JPG, PNG, PDF)",
+  "AI reads receipts in any format (JPG, PNG, PDF)",
   "Extracts merchant name, amount, date, tax, and line items",
   "Maps expenses to standard categories automatically",
   "Learns from your corrections for better accuracy over time",
@@ -41,13 +41,7 @@ export default function AIFeature() {
         duration: 0.5,
         ease: "power2.out",
       });
-      gsap.from(".ai-badge", {
-        scrollTrigger: { trigger: ref.current, start: "top 70%" },
-        scale: 0.8,
-        opacity: 0,
-        duration: 0.6,
-        ease: "back.out(1.7)",
-      });
+
     },
     { scope: ref }
   );
@@ -194,43 +188,7 @@ export default function AIFeature() {
               </div>
             ))}
 
-            {/* AI badge */}
-            <div
-              className="ai-badge"
-              style={{
-                marginTop: 32,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 12,
-                border: "1px solid rgba(191,216,82,0.4)",
-                backgroundColor: "rgba(191,216,82,0.06)",
-                padding: "12px 16px",
-              }}
-            >
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  backgroundColor: "var(--el-accent)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-                  <path d="M12 2 L14 9 L21 11 L14 13 L12 20 L10 13 L3 11 L10 9 Z" fill="#022c22" />
-                </svg>
-              </div>
-              <div>
-                <p style={{ color: "var(--el-white)", fontSize: 14, fontWeight: 700, lineHeight: 1.3 }}>
-                  Powered by Gemini AI
-                </p>
-                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, lineHeight: 1.4 }}>
-                  Google&apos;s most capable multimodal model
-                </p>
-              </div>
-            </div>
+
           </div>
         </div>
 

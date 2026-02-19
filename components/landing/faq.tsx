@@ -14,7 +14,7 @@ const faqs = [
   },
   {
     q: "How does AI receipt scanning work?",
-    a: "When you upload a receipt image or PDF, Gemini Vision AI analyzes it and extracts key information: merchant name, total amount, date, tax, and individual line items. This data is automatically recorded in your expense ledger — no manual entry needed.",
+    a: "When you upload a receipt image or PDF, AI AI analyzes it and extracts key information: merchant name, total amount, date, tax, and individual line items. This data is automatically recorded in your expense ledger — no manual entry needed.",
   },
   {
     q: "What file formats does ExpenseLens support?",
