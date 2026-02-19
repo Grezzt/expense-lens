@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,6 +10,13 @@
   --secondary: #bfd852; /* Hijau muda - Secondary */
   --secondary-hover: #a8c341; /* Slightly darker for hover */
   --background: #f1f1f1; /* Putih/Light gray - Background */
+
+  /* Landing page aliases (el- prefix) */
+  --el-primary: #022c22;
+  --el-primary-semi-light: rgba(191, 216, 82, 0.12);
+  --el-accent: #bfd852;
+  --el-white: #ffffff;
+  --el-black: #000000;
 
   /* Text Colors */
   --foreground: #022c22; /* Primary color for text */
@@ -258,4 +266,186 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
   -webkit-text-fill-color: var(--primary) !important;
+}
+
+/* =====================================================================
+   LANDING PAGE UTILITIES — ExpenseLens
+   Cloned from Visify.au design pattern
+   ===================================================================== */
+
+/* Grid background (hero overlay) */
+.el-grid-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' fill='none' stroke='rgba(191,216,82,0.06)' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 60px 60px;
+}
+
+/* Cream texture background */
+.el-has-texture {
+  background-color: #f5f2ee;
+  color: var(--el-primary);
+}
+
+/* White CTA button */
+.btn-el-white {
+  position: relative;
+  display: inline-block;
+  color: var(--el-primary);
+  text-decoration: none;
+  background-color: var(--el-white);
+  font-weight: 700;
+  padding: 13px 30px;
+  font-size: 14px;
+  font-family: "DM Sans", Arial, sans-serif;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  letter-spacing: 0.5px;
+}
+.btn-el-white:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 0 0 var(--el-accent);
+  color: var(--el-primary);
+}
+
+/* Outline button with corner brackets */
+.btn-el-outline {
+  position: relative;
+  display: inline-block;
+  color: var(--el-white);
+  text-decoration: none;
+  background-color: transparent;
+  font-weight: 600;
+  padding: 13px 30px;
+  font-size: 14px;
+  font-family: "DM Sans", Arial, sans-serif;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+}
+.btn-el-outline::before,
+.btn-el-outline::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(191, 216, 82, 0.7);
+}
+.btn-el-outline::before { top: 0; left: 0; border-right: none; border-bottom: none; }
+.btn-el-outline::after { bottom: 0; right: 0; border-left: none; border-top: none; }
+.btn-el-outline:hover {
+  background-color: var(--el-white);
+  color: var(--el-primary);
+  transform: translateY(-6px);
+  box-shadow: 0 8px 0 0 var(--el-accent);
+}
+
+/* Lime accent button */
+.btn-el-accent {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--el-accent);
+  color: var(--el-primary);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 10px 22px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  font-family: "DM Sans", Arial, sans-serif;
+}
+.btn-el-accent:hover { background-color: #d0ed3c; }
+
+/* Hover card wrapper */
+.el-hover-card-wrapper {
+  border: 1.5px solid var(--el-primary);
+  position: relative;
+}
+.el-hover-card-wrapper:last-child {
+  border-right: 1.5px solid var(--el-primary);
+}
+.el-hover-card {
+  padding: 24px 20px;
+  background-color: transparent;
+  transform: translate(0, 0);
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  min-height: 240px;
+}
+.el-hover-card:hover {
+  background-color: var(--el-primary);
+  transform: translate(-12px, -12px);
+  color: var(--el-white);
+}
+.el-hover-card:hover .el-hover-card-text { color: var(--el-white) !important; opacity: 0.8 !important; }
+.el-hover-card:hover .el-hover-card-heading { color: var(--el-white); }
+.el-hover-card:hover .el-hover-card-btn { color: var(--el-white); border-color: var(--el-accent); }
+.el-hover-card:hover .el-hover-card-icon { color: var(--el-accent); }
+.el-hover-card-shadow {
+  position: absolute;
+  width: 100%; height: 100%;
+  top: 0; left: 0;
+  z-index: 0;
+  background-color: var(--el-accent);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+.el-hover-card-shadow::before {
+  content: "";
+  position: absolute;
+  width: 0; height: 0;
+  border-style: solid; border-width: 12px;
+  top: -12px; right: -12px;
+  border-color: transparent transparent transparent var(--el-accent);
+}
+.el-hover-card-shadow::after {
+  content: "";
+  position: absolute;
+  width: 0; height: 0;
+  border-style: solid; border-width: 12px;
+  bottom: 0; left: -24px;
+  border-color: transparent var(--el-accent) transparent transparent;
+}
+.el-hover-card-wrapper:hover .el-hover-card-shadow { opacity: 1; visibility: visible; }
+.el-hover-card-heading { color: var(--el-primary); }
+
+/* Interactive hero grid cells */
+.el-grid-cell {
+  width: 60px; height: 60px;
+  box-sizing: border-box;
+  border: 0.5px solid var(--el-primary-semi-light);
+  background-color: transparent;
+  transition: background-color 0.3s ease-out;
+}
+
+/* Section callout label */
+.el-callout-text {
+  color: var(--el-primary);
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 2px;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .feat-cards,
+  .hiw-steps,
+  .ai-lists {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+  .el-hover-card-wrapper {
+    border-right: 1.5px solid var(--el-primary) !important;
+  }
+  .el-hover-card:hover { transform: translate(-8px, -8px); }
 }
