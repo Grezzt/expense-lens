@@ -54,12 +54,15 @@ Dashboard interaktif menampilkan tren pengeluaran, alokasi per kategori, KPI keu
 Hanya dengan **3 langkah sederhana**, laporan pengeluaran organisasi langsung selesai — tanpa antrian kertas, tanpa input manual, tanpa menunggu berhari-hari.
 
 ### Langkah 1 — Karyawan Memfoto Nota Perusahaan
+
 Karyawan cukup mengambil foto struk atau nota menggunakan smartphone. Tidak perlu mengisi formulir panjang atau menyimpan bukti fisik.
 
 ### Langkah 2 — Processing dan Validasi Secara Otomatis oleh AI
+
 Sistem secara otomatis mengekstrak data dari foto (merchant, nominal, tanggal, kategori) menggunakan Google AI. Data langsung masuk ke laporan pengeluaran tanpa ketik manual.
 
 ### Langkah 3 — Penindakan oleh Accountant / Admin Perusahaan
+
 Accountant atau Admin menerima notifikasi, meninjau laporan yang sudah terisi, lalu menyetujui atau menolak — cukup dari dashboard, kapan saja dan di mana saja.
 
 ---
