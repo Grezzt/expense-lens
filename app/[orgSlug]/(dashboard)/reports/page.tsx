@@ -12,11 +12,13 @@ import {
     ArrowUpRight,
     Download
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
 export default function ReportsPage() {
     const { currentOrg, currentUser } = useAppStore();
     const router = useRouter();
+    const params = useParams();
+    const orgSlug = params?.orgSlug as string;
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [loading, setLoading] = useState(true);
     const [timeRange, setTimeRange] = useState<'this_month' | 'last_3_months' | 'all'>('this_month');
@@ -80,7 +82,7 @@ export default function ReportsPage() {
     }, [expenses]);
 
     const handleExport = () => {
-        alert('Export functionality coming soon! (CSV/PDF)');
+        router.push(`/${orgSlug}/accounting`);
     };
 
     return (

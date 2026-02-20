@@ -47,9 +47,20 @@ Dashboard interaktif menampilkan tren pengeluaran, alokasi per kategori, KPI keu
 
 ---
 
-## Slide 4: Tujuan
+## Slide 4: Solusi Masalah
 
-_(belum diisi)_
+**Solusi Masalah**
+
+Hanya dengan **3 langkah sederhana**, laporan pengeluaran organisasi langsung selesai — tanpa antrian kertas, tanpa input manual, tanpa menunggu berhari-hari.
+
+### Langkah 1 — Karyawan Memfoto Nota Perusahaan
+Karyawan cukup mengambil foto struk atau nota menggunakan smartphone. Tidak perlu mengisi formulir panjang atau menyimpan bukti fisik.
+
+### Langkah 2 — Processing dan Validasi Secara Otomatis oleh AI
+Sistem secara otomatis mengekstrak data dari foto (merchant, nominal, tanggal, kategori) menggunakan Google AI. Data langsung masuk ke laporan pengeluaran tanpa ketik manual.
+
+### Langkah 3 — Penindakan oleh Accountant / Admin Perusahaan
+Accountant atau Admin menerima notifikasi, meninjau laporan yang sudah terisi, lalu menyetujui atau menolak — cukup dari dashboard, kapan saja dan di mana saja.
 
 ---
 
@@ -58,15 +69,19 @@ _(belum diisi)_
 **Fitur Unggulan**
 
 ### 🤖 AI Receipt Scanning
+
 Upload atau foto struk — AI langsung membaca nama merchant, total, rincian item, tanggal, dan pajak secara otomatis. Tanpa ketik manual.
 
 ### 🏷️ Kategorisasi Pengeluaran Otomatis
+
 AI otomatis mengelompokkan setiap pengeluaran ke kategori yang tepat (makanan, transportasi, perlengkapan, dll) berdasarkan merchant dan konteks transaksi.
 
 ### 📊 Dashboard Keuangan Real-Time
+
 Visualisasi pengeluaran secara real-time — filter per anggota, kategori, atau rentang waktu. Pantau tren bulanan, anggaran vs aktual, dan ekspor laporan ke Excel.
 
 ### 👥 Manajemen Multi-Organisasi
+
 Buat organisasi, undang anggota, atur peran (Owner / Admin / Manager / Staff / Accountant), dan lacak pengeluaran seluruh tim dalam satu platform terpusat.
 
 ---
